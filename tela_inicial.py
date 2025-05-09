@@ -20,6 +20,9 @@ def tela_inicio(tela):
             if event.type == pygame.QUIT:
                 state = QUIT
                 running = False
+            if event.type == pygame.K_KP_ENTER:
+                state = QUIT
+                running = False
 
         tela.fill(BLACK)
         tela.blit(inicial, inicial_rect)
