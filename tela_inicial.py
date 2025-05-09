@@ -29,6 +29,8 @@ def tela_inicio(tela):
         tela.fill(BLACK)
         tela.blit(inicial, inicial_rect)
 
+        pygame.draw.rect(tela, WHITE, (300, 200, 200, 100))
+
         pygame.display.flip()
 
     return state
