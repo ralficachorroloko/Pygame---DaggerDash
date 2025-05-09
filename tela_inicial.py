@@ -23,6 +23,8 @@ def tela_inicio(tela):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     print("Pressionou ENTER")
+                    state = QUIT
+                    running = False
 
         tela.fill(BLACK)
         tela.blit(inicial, inicial_rect)
