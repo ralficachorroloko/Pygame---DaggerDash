@@ -3,7 +3,7 @@ import os
 
 # Dados gerais do jogo.
 WIDTH = 800 # Largura da tela
-HEIGHT = 800 # Altura da tela
+HEIGHT = 600 # Altura da tela
 FPS = 60 # Frames por segundo
 
 # Define algumas variáveis com as cores básicas
