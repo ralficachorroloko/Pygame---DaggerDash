@@ -15,6 +15,6 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 # Estados para controle do fluxo da aplicação
-INIT = 0
+INICIO = 0
 MAPA = 1
 QUIT = 2
