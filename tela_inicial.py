@@ -4,9 +4,12 @@ from os import path
 
 from config import *
 
-
-
 def tela_inicio(tela):
+
+    pygame.mixer.init()
+    pygame.mixer.music.load(path.join('8bitmusic.mp3'))
+    pygame.mixer.music.play(-1)  
+
     clock = pygame.time.Clock()
     timer = 0
     mostrar_quadrado = True
