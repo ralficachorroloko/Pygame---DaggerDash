@@ -14,7 +14,7 @@ def tela_inicio(tela):
     timer = 0
     mostrar_quadrado = True
 
-    inicial = pygame.image.load(path.join('inicio.png')).convert()
+    inicial = pygame.image.load(path.join("img" ,'inicio.png')).convert()
     inicial = pygame.transform.scale(inicial, (WIDTH, HEIGHT))
     inicial_rect = inicial.get_rect()
 

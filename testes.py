@@ -5,7 +5,7 @@ from classes import *
 from config import *
 
 def tela_teste(tela):
-    jogador = Player(400, 300, 20, 20, RED, 10)
+    jogador = Player(400, 300, "idle.png", 10, (50, 50))
 
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('8bitmusic.mp3'))
@@ -29,6 +29,7 @@ def tela_teste(tela):
             jogador.mover(0, 1)
         if keys[pygame.K_LEFT]:
             jogador.mover(-1, 0)
+            
         if keys[pygame.K_RIGHT]:
             jogador.mover(1, 0)
 

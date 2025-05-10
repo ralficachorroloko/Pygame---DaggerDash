@@ -1,24 +1,20 @@
 import pygame
-import os
+from os import path
 from config import *
 
 class Player:
-    def __init__(self, x, y, largura, altura, cor, velocidade):
-        self.x = x
-        self.y = y
-        self.largura = largura
-        self.altura = altura
-        self.cor = cor
-        self.velocidade = velocidade
+    def __init__(self, x, y, imagem, velocidade, tamanho):
+        img = pygame.image.load(path.join("img", "player", imagem)).convert_alpha()
+        self.imagem = pygame.transform.scale(img, tamanho)
+        self.rect = self.imagem.get_rect(topleft=(x, y))
+        self.velocidade = velocidade 
 
     def desenhar_player(self, tela):
-        pygame.draw.rect(tela, self.cor, (self.x, self.y, self.largura, self.altura))
+        tela.blit(self.imagem, self.rect)
 
     def mover(self, dx, dy):
-        dx *= self.velocidade
-        dy *= self.velocidade
-        self.x += dx
-        self.y += dy
-        self.x = max(0, min(self.x, WIDTH - self.largura))
-        self.y = max(0, min(self.y, HEIGHT - self.altura))
+        self.rect.x += dx * self.velocidade
+        self.rect.y += dy * self.velocidade
+        self.rect.x = max(0, min(self.rect.x, WIDTH - self.rect.width))
+        self.rect.y = max(0, min(self.rect.y, HEIGHT - self.rect.height))
         
