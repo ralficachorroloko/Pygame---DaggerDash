@@ -4,8 +4,12 @@ from os import path
 
 from config import *
 
+
+
 def tela_inicio(tela):
     clock = pygame.time.Clock()
+    timer = 0
+    mostrar_quadrado = True
 
     inicial = pygame.image.load(path.join('inicio.png')).convert()
     inicial = pygame.transform.scale(inicial, (WIDTH, HEIGHT))
@@ -29,7 +33,14 @@ def tela_inicio(tela):
         tela.fill(BLACK)
         tela.blit(inicial, inicial_rect)
 
-        pygame.draw.rect(tela, WHITE, (300, 200, 200, 100))
+        #pisca "pressione enter para jogar"
+        timer += clock.get_time()
+        if timer >= 500:
+            mostrar_quadrado = not mostrar_quadrado
+            timer = 0
+
+        if mostrar_quadrado == True:
+            pygame.draw.rect(tela, BLACK, (160, 400, 500, 150))
 
         pygame.display.flip()
 
