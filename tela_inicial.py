@@ -30,7 +30,7 @@ def tela_inicio(tela):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     print("Pressionou ENTER")
-                    state = QUIT
+                    state = TESTES
                     running = False
 
         tela.fill(BLACK)
