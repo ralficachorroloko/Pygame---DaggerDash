@@ -37,9 +37,27 @@ class Kamikaze:
         self.imagem = pygame.transform.scale(img, tamanho)
         self.rect = pygame.Rect(x, y, tamanho[0], tamanho[1])
         self.velocidade = velocidade
+        self.alcance = alcance
 
     def atualizar(self, player):
-        distancia = math.hypot(player_x - inimigo_x, player_y - inimigo_y)
+        alcance = self.alcance
+        player_x = player.rect.x
+        player_y = player.rect.y
+        inimigo_x, inimigo_y = self.rect.x, self.rect.y
+
+        distancia = hypot(player_x - inimigo_x, player_y - inimigo_y)
+        if distancia <= alcance:
+            dx = player_x - inimigo_x
+            dy = player_y - inimigo_y
+            distancia = hypot(dx, dy)
+            dx /= distancia
+            dy /= distancia
+            self.rect.x += dx * self.velocidade
+            self.rect.y += dy * self.velocidade
+
+    def desenhar(self, tela):
+        tela.blit(self.imagem, self.rect)
+
         
 
         
