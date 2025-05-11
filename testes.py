@@ -8,6 +8,8 @@ def tela_teste(tela):
     jogador = Player(400, 300, "idle.png", 10, (50, 50))
     parede = Parede(300, 400, 100, 300)
 
+    paredes_mapa = [parede]
+
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  
@@ -30,9 +32,15 @@ def tela_teste(tela):
             jogador.mover(0, 1)
         if keys[pygame.K_LEFT]:
             jogador.mover(-1, 0)
-
         if keys[pygame.K_RIGHT]:
             jogador.mover(1, 0)
+
+#colisao
+        pos_anterior = jogador.rect.topleft
+
+        for parede in paredes_mapa:
+            if jogador.rect.colliderect(parede.rect):
+                jogador.rect.topleft = pos_anterior
 
         tela.fill(BLACK)
         jogador.desenhar(tela)
