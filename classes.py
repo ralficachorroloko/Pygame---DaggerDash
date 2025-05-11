@@ -44,6 +44,7 @@ class Kamikaze:
 
     def atualizar(self, player):
         alcance = self.alcance
+        velocidade = self.velocidade
         player_x = player.rect.x
         player_y = player.rect.y
         inimigo_x, inimigo_y = self.rect.x, self.rect.y
@@ -52,17 +53,20 @@ class Kamikaze:
         #PERSEGUICAO
 
         if distancia <= alcance:
+            velocidade += 3
             dx = player_x - inimigo_x
             dy = player_y - inimigo_y
             distancia = hypot(dx, dy)
             dx /= distancia
             dy /= distancia
-            self.rect.x += dx * self.velocidade
-            self.rect.y += dy * self.velocidade
+            self.rect.x += dx * velocidade
+            self.rect.y += dy * velocidade
 
         #WANDER
 
         else:
+            self.limite_esquerdo = self.rect.x - 50
+            self.limite_direito = self.rect.x + 50
             self.rect.x += self.direcao * self.velocidade
 
             if self.rect.left <= self.limite_esquerdo or self.rect.right >= self.limite_direito:

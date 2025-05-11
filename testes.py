@@ -7,7 +7,7 @@ from config import *
 def tela_teste(tela):
     jogador = Player(400, 300, "idle.png", 10, (50, 50))
     parede = Parede(300, 400, 100, 300)
-    inimigo = Kamikaze(100, 100, 3, (25, 25), 100, "idle.png")
+    inimigo = Kamikaze(100, 100, 3, (25, 25), 200, "idle.png")
 
     paredes_mapa = [parede]
 
