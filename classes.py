@@ -80,6 +80,63 @@ class Kamikaze:
     def desenhar(self, tela):
         tela.blit(self.imagem, self.rect)
 
-        
+class Sala:
+    def __init__(self, nome, portas):
+        #              'R1'  dicionario com {cima:True, baixo: False} etc..
+        self.nome = nome
+        self.portas = portas
+
+    def desenhar(self, tela):
+        # Limpa a tela com cor da sala
+        tela.fill((30, 30, 30))  # fundo cinza escuro
+
+
+        # Desenha portas
+        if self.portas.get("cima"):
+            pygame.draw.rect(tela, (200, 200, 200), (280, 0, 80, 20))  # topo
+        if self.portas.get("baixo"):
+            pygame.draw.rect(tela, (200, 200, 200), (280, 580, 80, 20))  # baixo
+        if self.portas.get("esquerda"):
+            pygame.draw.rect(tela, (200, 200, 200), (0, 280, 20, 80))  # esquerda
+        if self.portas.get("direita"):
+            pygame.draw.rect(tela, (200, 200, 200), (580, 280, 20, 80))  # direita
+
+class Dungeon:
+    def __init__(self):
+        self.matriz = self.criar_dungeon()
+        self.pos_x = 1
+        self.pos_y = 1
+
+    def criar_dungeon(self):
+        # Cria uma matriz 3x3 de salas, com conexões (portas) definidas
+        return [
+            [None, Sala("R1", {"baixo": True}), None],
+            [Sala("R2", {"direita": True}), Sala("START", {"esquerda": True, "direita": True, "baixo": True}), Sala("R3", {"esquerda": True})],
+            [None, Sala("R4", {"cima": True, "direita": True}), Sala("EXIT", {"esquerda": True})]
+        ]
+
+    def sala_atual(self):
+        return self.matriz[self.pos_y][self.pos_x]
+
+    def mudar_sala(self, direcao):
+        dx, dy = 0, 0
+        if direcao == "cima":
+            dy = -1
+        elif direcao == "baixo":
+            dy = 1
+        elif direcao == "esquerda":
+            dx = -1
+        elif direcao == "direita":
+            dx = 1
+
+        novo_x = self.pos_x + dx
+        novo_y = self.pos_y + dy
+
+        if 0 <= novo_y < len(self.matriz) and 0 <= novo_x < len(self.matriz[0]):
+            if self.matriz[novo_y][novo_x] is not None:
+                self.pos_x = novo_x
+                self.pos_y = novo_y
+                print(f"Entrou na sala: {self.sala_atual().nome}")
+
 
         
