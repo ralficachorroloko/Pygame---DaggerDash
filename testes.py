@@ -61,17 +61,6 @@ def tela_teste(tela):
                 if jogador.rect.colliderect(parede.rect):
                     jogador.rect.topleft = pos_anterior
 
-        # === Criação da espada ao apertar espaço ===
-        if keys[pygame.K_SPACE] and not espada:
-            espada = Espada(jogador, 5, jogador.direcao, "idle.png")  # Substitua por sua imagem da espada
-
-        # === Atualiza e desenha a espada se ela existir e estiver ativa ===
-        if espada and espada.esta_ativo():
-            espada.desenhar(tela)
-            espada.atualizar()
-        else:
-            espada = None  # Destrói a espada se não estiver mais ativa
-
         # === Atualiza e desenha o jogador ===
         tela.fill(BLACK)
         jogador.desenhar(tela)
@@ -86,6 +75,17 @@ def tela_teste(tela):
                 inimigos.remove(kamikaze)
             else:
                 kamikaze.desenhar(tela)
+
+        # === Criação da espada ao apertar espaço ===
+        if keys[pygame.K_SPACE] and not espada:
+            espada = Espada(jogador, 5, jogador.direcao, "idle.png")  # Substitua por sua imagem da espada
+
+        # === Atualiza e desenha a espada se ela existir e estiver ativa ===
+        if espada and espada.esta_ativo():
+            espada.desenhar(tela)
+            espada.atualizar()
+        else:
+            espada = None  # Destrói a espada se não estiver mais ativa
 
         # === Atualiza a tela ===
         pygame.display.flip()
