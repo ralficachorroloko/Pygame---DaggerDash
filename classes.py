@@ -41,6 +41,7 @@ class Kamikaze:
         self.direcao = 1
         self.limite_esquerdo = x - 50
         self.limite_direito = x + 50
+        self.em_patrulha = False
 
     def atualizar(self, player):
         alcance = self.alcance
@@ -53,6 +54,7 @@ class Kamikaze:
         #PERSEGUICAO
 
         if distancia <= alcance:
+            self.em_patrulha = False
             velocidade += 3
             dx = player_x - inimigo_x
             dy = player_y - inimigo_y
@@ -65,12 +67,10 @@ class Kamikaze:
         #WANDER
 
         else:
-            # Atualiza os limites baseados na posição atual
-            self.limite_esquerdo = self.rect.x - 50
-            self.limite_direito = self.rect.x + 50
-
-            # Reinicia a direção para esquerda (-1)
-            self.direcao = -1
+            if not self.em_patrulha:
+                self.limite_esquerdo = self.rect.x - 50
+                self.limite_direito = self.rect.x + 50
+                self.em_patrulha = True  
 
             self.rect.x += self.direcao * self.velocidade
 

@@ -7,9 +7,10 @@ from config import *
 def tela_teste(tela):
     jogador = Player(400, 300, "idle.png", 10, (50, 50))
     parede = Parede(300, 400, 100, 300)
-    inimigo = Kamikaze(300, 100, 3, (25, 25), 200, "idle.png")
+    inimigo = Kamikaze(300, 100, 1, (25, 25), 200, "idle.png")
 
     paredes_mapa = [parede]
+    inimigos = [inimigo]
 
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('8bitmusic.mp3'))
@@ -53,12 +54,18 @@ def tela_teste(tela):
                 if jogador.rect.colliderect(parede.rect):
                     jogador.rect.topleft = pos_anterior
 
-
-        inimigo.atualizar(jogador)
-
         tela.fill(BLACK)
         jogador.desenhar(tela)
         parede.desenhar(tela, True)
-        inimigo.desenhar(tela)
+        for kamikaze in inimigos:
+            kamikaze.atualizar(jogador)
+            kamikaze.desenhar(tela)
+
+        for kamikaze in inimigos[:]:  
+            kamikaze.atualizar(jogador)
+            if kamikaze.rect.colliderect(jogador.rect):
+                inimigos.remove(kamikaze)
+            else:
+                kamikaze.desenhar(tela)
 
         pygame.display.flip()
