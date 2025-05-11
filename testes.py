@@ -18,6 +18,7 @@ def tela_teste(tela):
     running = True
 
     while running:
+
         clock.tick(FPS)
 
         for event in pygame.event.get():
@@ -27,16 +28,17 @@ def tela_teste(tela):
             
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
+            pos_anterior = jogador.rect.topleft
             jogador.mover(0, -1)
         if keys[pygame.K_DOWN]:
+            pos_anterior = jogador.rect.topleft
             jogador.mover(0, 1)
         if keys[pygame.K_LEFT]:
+            pos_anterior = jogador.rect.topleft
             jogador.mover(-1, 0)
         if keys[pygame.K_RIGHT]:
+            pos_anterior = jogador.rect.topleft
             jogador.mover(1, 0)
-
-#colisao
-        pos_anterior = jogador.rect.topleft
 
         for parede in paredes_mapa:
             if jogador.rect.colliderect(parede.rect):
