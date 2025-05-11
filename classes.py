@@ -196,6 +196,7 @@ class Dungeon:
         return None
     
     def mudar_sala(self, direcao):
+        # Determina a direção de transição da sala na matriz
         dx, dy = 0, 0
         if direcao == "cima":
             dy = -1
@@ -206,17 +207,22 @@ class Dungeon:
         elif direcao == "direita":
             dx = 1
 
+        # calcula as coordenadas da sala de destino na matriz
         novo_x = self.pos_x + dx
         novo_y = self.pos_y + dy
 
+        # Verifica se a sala de destino existe e não é None
         if 0 <= novo_y < len(self.matriz) and 0 <= novo_x < len(self.matriz[novo_y]):
             if self.matriz[novo_y][novo_x] is not None:
+                # Atualiza as coordenadas da sala atual
                 self.pos_x = novo_x
                 self.pos_y = novo_y
+
+                # Teleporta o jogador para a sala de destino
                 if self.player:
                     self.player.teleportar_para(*self.sala_atual().player_spawn)
-                return True
-        return False
+                return True # Retorna True se a transição foi bem sucedida
+        return False # Retorna False se a transição falhou
     
     def atualizar(self):
         if self.player:
