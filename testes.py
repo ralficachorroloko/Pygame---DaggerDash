@@ -30,19 +30,27 @@ def tela_teste(tela):
         if keys[pygame.K_UP]:
             pos_anterior = jogador.rect.topleft
             jogador.mover(0, -1)
+            for parede in paredes_mapa:
+                if jogador.rect.colliderect(parede.rect):
+                    jogador.rect.topleft = pos_anterior
         if keys[pygame.K_DOWN]:
             pos_anterior = jogador.rect.topleft
             jogador.mover(0, 1)
+            for parede in paredes_mapa:
+                if jogador.rect.colliderect(parede.rect):
+                    jogador.rect.topleft = pos_anterior
         if keys[pygame.K_LEFT]:
             pos_anterior = jogador.rect.topleft
             jogador.mover(-1, 0)
+            for parede in paredes_mapa:
+                if jogador.rect.colliderect(parede.rect):
+                    jogador.rect.topleft = pos_anterior
         if keys[pygame.K_RIGHT]:
             pos_anterior = jogador.rect.topleft
             jogador.mover(1, 0)
-
-        for parede in paredes_mapa:
-            if jogador.rect.colliderect(parede.rect):
-                jogador.rect.topleft = pos_anterior
+            for parede in paredes_mapa:
+                if jogador.rect.colliderect(parede.rect):
+                    jogador.rect.topleft = pos_anterior
 
         tela.fill(BLACK)
         jogador.desenhar(tela)
