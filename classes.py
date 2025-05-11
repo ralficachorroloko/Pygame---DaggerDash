@@ -65,8 +65,13 @@ class Kamikaze:
         #WANDER
 
         else:
+            # Atualiza os limites baseados na posição atual
             self.limite_esquerdo = self.rect.x - 50
             self.limite_direito = self.rect.x + 50
+
+            # Reinicia a direção para esquerda (-1)
+            self.direcao = -1
+
             self.rect.x += self.direcao * self.velocidade
 
             if self.rect.left <= self.limite_esquerdo or self.rect.right >= self.limite_direito:
