@@ -16,8 +16,6 @@ class Player:
     def mover(self, dx, dy):
         self.rect.x += dx * self.velocidade
         self.rect.y += dy * self.velocidade
-        self.rect.x = max(0, min(self.rect.x, WIDTH - self.rect.width))
-        self.rect.y = max(0, min(self.rect.y, HEIGHT - self.rect.height))
 
 class Parede:
     def __init__(self, x, y, largura, altura):
@@ -86,6 +84,7 @@ class Sala:
         self.paredes = []
         self.inimigos = []
         self.player_spawn = player_spawn
+        self.areas_portas = {}  # Áreas específicas para as portas
         
         # Adiciona as paredes padrão da sala
         self._criar_paredes_padrao()
@@ -93,12 +92,11 @@ class Sala:
         # Adiciona paredes personalizadas se fornecidas
         if paredes:
             for parede in paredes:
-                self.paredes.append(Parede(*parede))  # (x, y, largura, altura)
+                self.paredes.append(Parede(*parede))
         
         # Adiciona inimigos personalizados se fornecidos
         if inimigos:
             for inimigo in inimigos:
-                # inimigo deve ser uma tupla (x, y, velocidade, tamanho, alcance, imagem)
                 self.inimigos.append(Kamikaze(*inimigo))
     
     def _criar_paredes_padrao(self):
@@ -108,18 +106,32 @@ class Sala:
         self.paredes.append(Parede(0, 0, 20, HEIGHT))  # Parede esquerda
         self.paredes.append(Parede(WIDTH-20, 0, 20, HEIGHT))  # Parede direita
         
-        # Adiciona paredes ao redor das portas
-        if not self.portas.get("cima"):
+        # Define áreas das portas
+        if self.portas.get("cima"):
+            self.areas_portas["cima"] = pygame.Rect(280, 0, 80, 20)
+        else:
             self.paredes.append(Parede(280, 0, 80, 20))
-        if not self.portas.get("baixo"):
+            
+        if self.portas.get("baixo"):
+            self.areas_portas["baixo"] = pygame.Rect(280, HEIGHT-20, 80, 20)
+        else:
             self.paredes.append(Parede(280, HEIGHT-20, 80, 20))
-        if not self.portas.get("esquerda"):
+            
+        if self.portas.get("esquerda"):
+            self.areas_portas["esquerda"] = pygame.Rect(0, 280, 20, 80)
+        else:
             self.paredes.append(Parede(0, 280, 20, 80))
-        if not self.portas.get("direita"):
+            
+        if self.portas.get("direita"):
+            self.areas_portas["direita"] = pygame.Rect(WIDTH-20, 280, 20, 80)
+        else:
             self.paredes.append(Parede(WIDTH-20, 280, 20, 80))
     
-    def adicionar_inimigo(self, inimigo):
-        self.inimigos.append(inimigo)
+    def verificar_porta(self, player_rect):
+        for direcao, area in self.areas_portas.items():
+            if player_rect.colliderect(area):
+                return direcao
+        return None
     
     def desenhar(self, tela):
         # Draw room background
@@ -130,14 +142,8 @@ class Sala:
             parede.desenhar(tela)
         
         # Draw doors
-        if self.portas.get("cima"):
-            pygame.draw.rect(tela, (200, 200, 200), (280, 0, 80, 20))
-        if self.portas.get("baixo"):
-            pygame.draw.rect(tela, (200, 200, 200), (280, HEIGHT-20, 80, 20))
-        if self.portas.get("esquerda"):
-            pygame.draw.rect(tela, (200, 200, 200), (0, 280, 20, 80))
-        if self.portas.get("direita"):
-            pygame.draw.rect(tela, (200, 200, 200), (WIDTH-20, 280, 20, 80))
+        for area in self.areas_portas.values():
+            pygame.draw.rect(tela, (200, 200, 200), area)
         
         # Draw enemies
         for inimigo in self.inimigos:
@@ -217,25 +223,37 @@ class Dungeon:
         self.sala_atual().desenhar(tela)
         if self.player:
             self.player.desenhar(tela)
+            
+        # Desenha o nome da sala atual
+        fonte = pygame.font.Font(None, 36)
+        texto = fonte.render(f"Sala: {self.sala_atual().nome}", True, WHITE)
+        tela.blit(texto, (10, 10))
     
     def mover_jogador(self, dx, dy):
         if self.player:
             pos_anterior = self.player.rect.topleft
             self.player.mover(dx, dy)
             
-            # Check wall collisions
+            # Check door transitions first
+            sala_atual = self.sala_atual()
+            if sala_atual:
+                direcao_porta = sala_atual.verificar_porta(self.player.rect)
+                if direcao_porta:
+                    if self.mudar_sala(direcao_porta):
+                        # Ajusta a posição do jogador após a transição
+                        if direcao_porta == "cima":
+                            self.player.rect.bottom = HEIGHT - 20
+                        elif direcao_porta == "baixo":
+                            self.player.rect.top = 20
+                        elif direcao_porta == "esquerda":
+                            self.player.rect.right = WIDTH - 20
+                        elif direcao_porta == "direita":
+                            self.player.rect.left = 20
+                        return
+            
+            # Check wall collisions only if no door transition happened
             if self.sala_atual().verificar_colisao(self.player, pos_anterior):
                 return
-            
-            # Check door transitions
-            if self.player.rect.top <= 0 and self.sala_atual().portas.get("cima"):
-                self.mudar_sala("cima")
-            elif self.player.rect.bottom >= HEIGHT and self.sala_atual().portas.get("baixo"):
-                self.mudar_sala("baixo")
-            elif self.player.rect.left <= 0 and self.sala_atual().portas.get("esquerda"):
-                self.mudar_sala("esquerda")
-            elif self.player.rect.right >= WIDTH and self.sala_atual().portas.get("direita"):
-                self.mudar_sala("direita")
 
 
         
