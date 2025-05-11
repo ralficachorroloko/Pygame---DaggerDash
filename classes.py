@@ -18,6 +18,9 @@ class Player:
         self.rect.x += dx * self.velocidade
         self.rect.y += dy * self.velocidade
 
+    def teleportar_para(self, x, y):
+        self.rect.topleft = (x, y)
+
 class Parede:
     def __init__(self, x, y, largura, altura):
         self.x = x
@@ -210,9 +213,8 @@ class Dungeon:
             if self.matriz[novo_y][novo_x] is not None:
                 self.pos_x = novo_x
                 self.pos_y = novo_y
-                # Reset player position when changing rooms
                 if self.player:
-                    self.player.rect.topleft = self.sala_atual().player_spawn
+                    self.player.teleportar_para(*self.sala_atual().player_spawn)
                 return True
         return False
     
@@ -235,24 +237,15 @@ class Dungeon:
             pos_anterior = self.player.rect.topleft
             self.player.mover(dx, dy)
             
-            # Check door transitions first
+            # Transição de sala
             sala_atual = self.sala_atual()
             if sala_atual:
                 direcao_porta = sala_atual.verificar_porta(self.player.rect)
                 if direcao_porta:
                     if self.mudar_sala(direcao_porta):
-                        # Ajusta a posição do jogador após a transição
-                        if direcao_porta == "cima":
-                            self.player.rect.bottom = HEIGHT - 20
-                        elif direcao_porta == "baixo":
-                            self.player.rect.top = 20
-                        elif direcao_porta == "esquerda":
-                            self.player.rect.right = WIDTH - 20
-                        elif direcao_porta == "direita":
-                            self.player.rect.left = 20
                         return
             
-            # Check wall collisions only if no door transition happened
+            # Verifica colisão com paredes
             if self.sala_atual().verificar_colisao(self.player, pos_anterior):
                 return
 
