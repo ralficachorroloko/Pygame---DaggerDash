@@ -1,14 +1,8 @@
-
-from os import path
-from Classes.Player import *
-from Classes.Sala import *
-from Classes.Parede import *
-from Classes.Espada import *
-from Classes.Kamikaze import *
-from Classes.Dungeon import *
 import pygame
-from config import *
-from math import *
+from os import path
+from Classes.Player import Player
+from Classes.Sala import Sala
+from config import HEIGHT, WIDTH, WHITE
 
 class Dungeon:
     def __init__(self, matriz=None):
@@ -83,14 +77,16 @@ class Dungeon:
             self.sala_atual().atualizar(self.player)
     
     def desenhar(self, tela):
-        self.sala_atual().desenhar(tela)
-        if self.player:
-            self.player.desenhar(tela)
-            
-        # Desenha o nome da sala atual
-        fonte = pygame.font.Font(None, 36)
-        texto = fonte.render(f"Sala: {self.sala_atual().nome}", True, WHITE)
-        tela.blit(texto, (10, 10))
+        sala = self.sala_atual()
+        if sala:
+            sala.desenhar(tela)
+            if self.player:
+                self.player.desenhar(tela)
+                
+            # Desenha o nome da sala atual
+            fonte = pygame.font.Font(None, 36)
+            texto = fonte.render(f"Sala: {sala.nome}", True, WHITE)
+            tela.blit(texto, (10, 10))
     
     def mover_jogador(self, dx, dy):
         if self.player:
