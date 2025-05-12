@@ -1,6 +1,13 @@
 # ===== Inicialização =====
 # ----- Importa e inicia pacotes
+from os import path
+from Classes.Player import *
+from Classes.Sala import *
+from Classes.Parede import *
+from Classes.Espada import *
+from Classes.Kamikaze import *
 import pygame
+from math import *
 import random
 from config import *
 from tela_inicial import *

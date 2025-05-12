@@ -1,8 +1,11 @@
 
-
-from classes import *
-import pygame
 from os import path
+from Classes.Player import *
+from Classes.Sala import *
+from Classes.Parede import *
+from Classes.Espada import *
+from Classes.Kamikaze import *
+import pygame
 from config import *
 from math import *
 
