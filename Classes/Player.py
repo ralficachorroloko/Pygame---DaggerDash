@@ -1,8 +1,5 @@
-
 from os import path
 import pygame
-from config import *
-from math import *
 
 class Player:
     def __init__(self, x, y, imagem, velocidade, tamanho):

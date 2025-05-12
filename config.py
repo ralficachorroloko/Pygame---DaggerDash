@@ -1,8 +1,5 @@
 from os import path
-
-from Classes.Dungeon import Dungeon 
 import pygame
-
 from math import *
 
 # Dados gerais do jogo.

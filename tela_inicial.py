@@ -1,10 +1,10 @@
 from os import path
-from Classes.Player import *
-from Classes.Sala import *
-from Classes.Parede import *
-from Classes.Espada import *
-from Classes.Kamikaze import *
-from Classes.Dungeon import *   
+from Classes.Player import Player   
+from Classes.Sala import Sala
+from Classes.Parede import Parede
+from Classes.Espada import Espada
+from Classes.Kamikaze import Kamikaze
+from Classes.Dungeon import Dungeon   
 import pygame
 from config import *
 from math import *
