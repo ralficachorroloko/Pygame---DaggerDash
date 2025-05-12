@@ -5,7 +5,8 @@ from Classes.Player import *
 from Classes.Sala import *
 from Classes.Parede import *
 from Classes.Espada import *
-from Classes.Kamikaze import *
+from Classes.Kamikaze import *  
+from Classes.Dungeon import *   
 import pygame
 from math import *
 import random
