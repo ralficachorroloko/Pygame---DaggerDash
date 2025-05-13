@@ -34,6 +34,9 @@ def tela_teste(tela):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return QUIT
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and not espada:  # 1 é o botão esquerdo do mouse
+                    espada = Espada(jogador, 10, pygame.mouse.get_pos(), "idle.png")
 
         # === Controle de movimento do jogador ===
         keys = pygame.key.get_pressed()
@@ -80,10 +83,6 @@ def tela_teste(tela):
                 inimigos.remove(kamikaze)
             else:
                 kamikaze.desenhar(tela)
-
-        # === Criação da espada ao apertar espaço ===
-        if keys[pygame.K_SPACE] and not espada:
-            espada = Espada(jogador, 5, pygame.mouse.get_pos(), "idle.png")  # Substitua por sua imagem da espada
 
         # === Atualiza e desenha a espada se ela existir e estiver ativa ===
         if espada and espada.esta_ativo():
