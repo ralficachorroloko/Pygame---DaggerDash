@@ -37,28 +37,28 @@ def tela_teste(tela):
 
         # === Controle de movimento do jogador ===
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_w]:
             jogador.direcao = "w"
             pos_anterior = jogador.rect.topleft
             jogador.mover(0, -1)
             for parede in paredes_mapa:
                 if jogador.rect.colliderect(parede.rect):
                     jogador.rect.topleft = pos_anterior
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             jogador.direcao = "s"
             pos_anterior = jogador.rect.topleft
             jogador.mover(0, 1)
             for parede in paredes_mapa:
                 if jogador.rect.colliderect(parede.rect):
                     jogador.rect.topleft = pos_anterior
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             jogador.direcao = "a"
             pos_anterior = jogador.rect.topleft
             jogador.mover(-1, 0)
             for parede in paredes_mapa:
                 if jogador.rect.colliderect(parede.rect):
                     jogador.rect.topleft = pos_anterior
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             jogador.direcao = "d"
             pos_anterior = jogador.rect.topleft
             jogador.mover(1, 0)
@@ -83,7 +83,7 @@ def tela_teste(tela):
 
         # === Criação da espada ao apertar espaço ===
         if keys[pygame.K_SPACE] and not espada:
-            espada = Espada(jogador, 5, jogador.direcao, "idle.png")  # Substitua por sua imagem da espada
+            espada = Espada(jogador, 5, pygame.mouse.get_pos(), "idle.png")  # Substitua por sua imagem da espada
 
         # === Atualiza e desenha a espada se ela existir e estiver ativa ===
         if espada and espada.esta_ativo():
