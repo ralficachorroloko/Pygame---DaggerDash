@@ -1,4 +1,3 @@
-
 import pygame
 from config import *
 from math import *
@@ -12,5 +11,6 @@ class Parede:
         self.rect = pygame.Rect(x, y, largura, altura)
     
     def desenhar(self, tela, mostrar_hitbox=False):
-        if mostrar_hitbox == True:
-            pygame.draw.rect(tela, (255, 0, 0), self.rect)
+        pygame.draw.rect(tela, (100, 100, 100), self.rect)  # Desenha a parede em cinza
+        if mostrar_hitbox:
+            pygame.draw.rect(tela, (255, 0, 0), self.rect, 2)  # Desenha a hitbox em vermelho
