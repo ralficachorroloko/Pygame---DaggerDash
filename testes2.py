@@ -6,15 +6,11 @@ from Classes.Espada import *
 from Classes.Kamikaze import *
 from Classes.Dungeon import *
 from Classes.Shoot import *
-from Classes.TileManager import TileManager
 import pygame
 from config import *
 from math import *
 
 def tela_teste2(tela):
-    # Inicializa o TileManager
-    tile_manager = TileManager()
-    
     # Criando a dungeon
     dungeon = Dungeon()
     
