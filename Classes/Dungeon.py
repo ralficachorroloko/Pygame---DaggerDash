@@ -88,7 +88,7 @@ class Dungeon:
             texto = fonte.render(f"Sala: {sala.nome}", True, WHITE)
             tela.blit(texto, (10, 10))
     
-    def mover_jogador(self, dx, dy):
+    def passagem_porta(self, dx, dy):
         if self.player:
             pos_anterior = self.player.rect.topleft
             self.player.mover(dx, dy)

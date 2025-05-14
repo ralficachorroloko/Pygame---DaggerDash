@@ -86,7 +86,7 @@ def tela_teste2(tela):
             jogador.dash()
             
         if dx != 0 or dy != 0:
-            dungeon.mover_jogador(dx, dy)
+            dungeon.passagem_porta(dx, dy)
 
         # --- Controle de Tiro com botão direito do mouse ---
         if pygame.mouse.get_pressed()[2] and jogador.tem_arco and cooldown_shoot == 0:
