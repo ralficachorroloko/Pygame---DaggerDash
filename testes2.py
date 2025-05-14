@@ -5,6 +5,7 @@ from Classes.Parede import *
 from Classes.Espada import *
 from Classes.Kamikaze import *
 from Classes.Dungeon import *
+from Classes.Shoot import *
 import pygame
 from config import *
 from math import *
@@ -53,6 +54,9 @@ def tela_teste2(tela):
     clock = pygame.time.Clock()
     espada = None  # Inicializa sem espada
     jogador = dungeon.player
+    shoots = []  # Lista para armazenar os tiros
+    jogador.tem_arco = True  # Remove esta linha se quiser desbloquear o arco depois
+    cooldown_shoot = 0  # Controle de tempo entre tiros
     running = True
 
     while running:
@@ -83,6 +87,21 @@ def tela_teste2(tela):
         if dx != 0 or dy != 0:
             dungeon.mover_jogador(dx, dy)
 
+        # --- Controle de Tiro com botão direito do mouse ---
+        if pygame.mouse.get_pressed()[2] and jogador.tem_arco and cooldown_shoot == 0:
+            shoots.append(Shoot(jogador, pygame.mouse.get_pos(), "idle.png"))  # Substitua pela imagem da flecha
+            cooldown_shoot = 15  # Controle de intervalo entre os tiros
+
+        if cooldown_shoot > 0:
+            cooldown_shoot -= 1
+
+        # Atualiza tiros existentes
+        for shoot in shoots[:]:
+            shoot.atualizar()
+            # Remove se sair da tela
+            if not tela.get_rect().colliderect(shoot.rect):
+                shoots.remove(shoot)
+
         # Update game state
         dungeon.atualizar()
         jogador.atualizar()
@@ -96,6 +115,10 @@ def tela_teste2(tela):
             espada.atualizar()
         else:
             espada = None  # Destrói a espada se não estiver mais ativa
+
+        # Desenha os tiros
+        for shoot in shoots:
+            shoot.desenhar(tela)
         
         pygame.display.flip() 
 

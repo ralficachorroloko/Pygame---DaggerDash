@@ -19,6 +19,8 @@ class Player:
         self.dash_cooldown = 0  # Contador para o cooldown
         self.dash_cooldown_max = 180  # 3 segundos (60 frames por segundo * 3)
 
+        self.tem_arco = False
+
     def desenhar(self, tela):
         if self.dash_ativo:
             # Cria uma cópia da imagem com transparência
