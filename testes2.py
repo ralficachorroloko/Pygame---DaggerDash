@@ -86,14 +86,16 @@ def tela_teste2(tela):
         # Update game state
         dungeon.atualizar()
         jogador.atualizar()
+        
+        # Draw everything
+        dungeon.desenhar(tela)  # Primeiro desenha a dungeon
+        
+        # Desenha a espada por último para ficar por cima
         if espada and espada.esta_ativo():
             espada.desenhar(tela)
             espada.atualizar()
         else:
             espada = None  # Destrói a espada se não estiver mais ativa
-        
-        # Draw everything
-        dungeon.desenhar(tela)
         
         pygame.display.flip() 
 
