@@ -6,11 +6,15 @@ from Classes.Espada import *
 from Classes.Kamikaze import *
 from Classes.Dungeon import *
 from Classes.Shoot import *
+from Classes.TileManager import TileManager
 import pygame
 from config import *
 from math import *
 
 def tela_teste2(tela):
+    # Inicializa o TileManager
+    tile_manager = TileManager()
+    
     # Criando a dungeon
     dungeon = Dungeon()
     
@@ -45,8 +49,6 @@ def tela_teste2(tela):
     dungeon.adicionar_sala(sala_baixo, 0, 1)      # Sala abaixo
     dungeon.adicionar_sala(sala_diagonal, 1, 1)   # Sala diagonal
 
-    
-
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  
@@ -70,7 +72,6 @@ def tela_teste2(tela):
                 if event.button == 1 and not espada:  # 1 é o botão esquerdo do mouse
                     espada = Espada(jogador, pygame.mouse.get_pos(), "idle.png")
 
-            
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
         if keys[pygame.K_w]:
@@ -107,6 +108,7 @@ def tela_teste2(tela):
         jogador.atualizar()
         
         # Draw everything
+        tela.fill((0, 0, 0))  # Limpa a tela com preto
         dungeon.desenhar(tela)  # Primeiro desenha a dungeon
         
         # Desenha a espada por último para ficar por cima
@@ -120,5 +122,5 @@ def tela_teste2(tela):
         for shoot in shoots:
             shoot.desenhar(tela)
         
-        pygame.display.flip() 
+        pygame.display.flip()
 
