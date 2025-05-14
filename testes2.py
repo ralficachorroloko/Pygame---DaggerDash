@@ -44,11 +44,15 @@ def tela_teste2(tela):
     dungeon.adicionar_sala(sala_baixo, 0, 1)      # Sala abaixo
     dungeon.adicionar_sala(sala_diagonal, 1, 1)   # Sala diagonal
 
+    
+
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  
 
     clock = pygame.time.Clock()
+    espada = None  # Inicializa sem espada
+    jogador = dungeon.player
     running = True
 
     while running:
@@ -58,6 +62,10 @@ def tela_teste2(tela):
             if event.type == pygame.QUIT:
                 state = QUIT
                 return state
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1 and not espada:  # 1 é o botão esquerdo do mouse
+                    espada = Espada(jogador, pygame.mouse.get_pos(), "idle.png")
+
             
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
@@ -69,14 +77,23 @@ def tela_teste2(tela):
             dx = -1
         if keys[pygame.K_d]:
             dx = 1
+        if keys[pygame.K_SPACE]:
+            jogador.dash()
             
         if dx != 0 or dy != 0:
             dungeon.mover_jogador(dx, dy)
 
         # Update game state
         dungeon.atualizar()
+        jogador.atualizar()
+        if espada and espada.esta_ativo():
+            espada.desenhar(tela)
+            espada.atualizar()
+        else:
+            espada = None  # Destrói a espada se não estiver mais ativa
         
         # Draw everything
         dungeon.desenhar(tela)
         
         pygame.display.flip() 
+

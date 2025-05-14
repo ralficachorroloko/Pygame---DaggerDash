@@ -36,7 +36,7 @@ def tela_teste(tela):
                 return QUIT
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and not espada:  # 1 é o botão esquerdo do mouse
-                    espada = Espada(jogador, 10, pygame.mouse.get_pos(), "idle.png")
+                    espada = Espada(jogador, pygame.mouse.get_pos(), "idle.png")
 
         # === Controle de movimento do jogador ===
         keys = pygame.key.get_pressed()

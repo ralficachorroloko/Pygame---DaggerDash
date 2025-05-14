@@ -4,9 +4,9 @@ from config import *
 from math import *
 
 class Espada:
-    def __init__(self, player, duracao, mouse_pos, imagem):
+    def __init__(self, player, mouse_pos, imagem):
         self.rect = player.rect
-        self.duracao = duracao
+        self.duracao = 10
         
         # Calcula o ângulo entre o jogador e o mouse
         dx = mouse_pos[0] - player.rect.centerx
