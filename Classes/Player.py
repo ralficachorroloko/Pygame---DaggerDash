@@ -5,11 +5,14 @@ class Player:
     def __init__(self, x, y, imagem, velocidade, tamanho):
         img = pygame.image.load(path.join("img", "player", imagem)).convert_alpha()
         self.imagem = pygame.transform.scale(img, tamanho)
+        self.imagem_original = self.imagem.copy()  # Guarda a imagem original
         self.rect = self.imagem.get_rect(topleft=(x, y))
+
         self.velocidade = velocidade 
-        
         self.velocidade_original = velocidade  # Guarda a velocidade original
+
         self.direcao = None
+        
         self.dash_ativo = False
         self.dash_frames = 0
         self.dash_duracao = 10  # Número de frames que o dash vai durar
@@ -17,7 +20,13 @@ class Player:
         self.dash_cooldown_max = 180  # 3 segundos (60 frames por segundo * 3)
 
     def desenhar(self, tela):
-        tela.blit(self.imagem, self.rect)
+        if self.dash_ativo:
+            # Cria uma cópia da imagem com transparência
+            imagem_dash = self.imagem_original.copy()
+            imagem_dash.set_alpha(128)  # Define a transparência (0-255)
+            tela.blit(imagem_dash, self.rect)
+        else:
+            tela.blit(self.imagem, self.rect)
 
     def mover(self, dx, dy):
         self.rect.x += dx * self.velocidade
