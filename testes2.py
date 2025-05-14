@@ -72,13 +72,17 @@ def tela_teste2(tela):
         dx, dy = 0, 0
         if keys[pygame.K_w]:
             dy = -1
+            jogador.direcao = "w"
         if keys[pygame.K_s]:
             dy = 1
+            jogador.direcao = "s"
         if keys[pygame.K_a]:
             dx = -1
+            jogador.direcao = "a"
         if keys[pygame.K_d]:
             dx = 1
-        if keys[pygame.K_SPACE]:
+            jogador.direcao = "d"
+        if keys[pygame.K_LSHIFT]:
             jogador.dash()
             
         if dx != 0 or dy != 0:

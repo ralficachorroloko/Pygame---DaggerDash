@@ -15,9 +15,10 @@ class Player:
         
         self.dash_ativo = False
         self.dash_frames = 0
-        self.dash_duracao = 10  # Número de frames que o dash vai durar
+        self.dash_duracao = 8  # Número de frames que o dash vai durar
         self.dash_cooldown = 0  # Contador para o cooldown
-        self.dash_cooldown_max = 180  # 3 segundos (60 frames por segundo * 3)
+        self.dash_cooldown_max = 120  # 2 segundos (60 frames por segundo * 2)
+        self.dash_direcao = [0, 0]  # Direção do dash [dx, dy]
 
         self.tem_arco = False
 
@@ -31,16 +32,35 @@ class Player:
             tela.blit(self.imagem, self.rect)
 
     def mover(self, dx, dy):
-        self.rect.x += dx * self.velocidade
-        self.rect.y += dy * self.velocidade
+        if self.dash_ativo:
+            # Durante o dash, usa a direção armazenada
+            self.rect.x += self.dash_direcao[0] * self.velocidade
+            self.rect.y += self.dash_direcao[1] * self.velocidade
+        else:
+            # Movimento normal
+            self.rect.x += dx * self.velocidade
+            self.rect.y += dy * self.velocidade
 
     def teleportar_para(self, x, y):
         self.rect.topleft = (x, y)
     
     def dash(self):
         if not self.dash_ativo and self.dash_cooldown <= 0:  # Só ativa se não estiver ativo e cooldown acabou
+            # Armazena a direção atual do movimento
+            if self.direcao == "w":
+                self.dash_direcao = [0, -1]
+            elif self.direcao == "s":
+                self.dash_direcao = [0, 1]
+            elif self.direcao == "a":
+                self.dash_direcao = [-1, 0]
+            elif self.direcao == "d":
+                self.dash_direcao = [1, 0]
+            else:
+                # Se não houver direção definida, não ativa o dash
+                return
+                
             self.dash_ativo = True
-            self.velocidade = self.velocidade_original * 2
+            self.velocidade = self.velocidade_original * 3
             self.dash_frames = 0
 
     def atualizar(self):
