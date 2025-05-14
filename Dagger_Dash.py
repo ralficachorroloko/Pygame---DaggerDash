@@ -12,7 +12,6 @@ from math import *
 import random
 from config import *
 from tela_inicial import *
-from testes import tela_teste
 from testes2 import tela_teste2
 
 
@@ -31,9 +30,6 @@ while state != QUIT:
     if state == INICIO:
         print("Entrando na tela inicial")
         state = tela_inicio(tela)
-    if state == TESTES:
-        print("Entrando no teste 1")
-        state = tela_teste(tela)
     if state == TESTES2:
         print("Entrando no teste 2")
         state = tela_teste2(tela)

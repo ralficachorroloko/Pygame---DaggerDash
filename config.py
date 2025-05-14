@@ -19,6 +19,5 @@ YELLOW = (255, 255, 0)
 INICIO = 0
 MAPA = 1
 QUIT = 2
-TESTES = 3
 TESTES2 = 4  # Novo estado para o teste da dungeon
 DUNGEON = 5  # Novo estado para fluxo de Dungeon
