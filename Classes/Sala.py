@@ -58,24 +58,6 @@ class Sala:
             self.paredes.append(Parede(WIDTH-24, 0, 48, HEIGHT))  # Parede direita 
         
         # Define áreas das portas
-        if self.portas.get("cima"):
-            self.areas_portas["cima"] = pygame.Rect(280, 0, 80, 16)
-        else:
-            if self.nome == "Spawn":
-                # Não adiciona parede extra pois já existe a parede principal
-                pass
-            else:
-                self.paredes.append(Parede(280, 0, 80, 64))  # Parede superior (2 blocos)
-            
-        if self.portas.get("baixo"):
-            self.areas_portas["baixo"] = pygame.Rect(280, HEIGHT-16, 80, 16)
-        else:
-            if self.nome == "Spawn":
-                # Não adiciona parede extra pois já existe a parede principal
-                pass
-            else:
-                self.paredes.append(Parede(280, HEIGHT-32, 80, 32))  # Parede inferior (1 bloco)
-            
         if self.portas.get("esquerda"):
             self.areas_portas["esquerda"] = pygame.Rect(0, 280, 16, 80)
         else:

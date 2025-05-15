@@ -5,12 +5,14 @@ from Classes.Sala import Sala
 from config import HEIGHT, WIDTH, WHITE
 
 class Dungeon:
-    def __init__(self, matriz=None):
+    def __init__(self, matriz=None, dungeon_num=1):
         self.matriz = matriz if matriz else []
         self.pos_x = 0
         self.pos_y = 0
         self.player = None
         self.ultima_direcao = None  # Armazena a direção da última transição
+        self.dungeon_num = dungeon_num  # Número da dungeon atual (1-7)
+        self.completa = False  # Indica se a dungeon foi completada
     
     def adicionar_sala(self, sala, x, y):
         # Garante que a matriz tem espaço suficiente
@@ -34,26 +36,20 @@ class Dungeon:
     
     def mudar_sala(self, direcao):
         # Determina a direção de transição da sala na matriz
-        dx, dy = 0, 0
-        if direcao == "cima":
-            dy = -1
-        elif direcao == "baixo":
-            dy = 1
-        elif direcao == "esquerda":
+        dx = 0
+        if direcao == "esquerda":
             dx = -1
         elif direcao == "direita":
             dx = 1
 
         # calcula as coordenadas da sala de destino na matriz
         novo_x = self.pos_x + dx
-        novo_y = self.pos_y + dy
 
         # Verifica se a sala de destino existe e não é None
-        if 0 <= novo_y < len(self.matriz) and 0 <= novo_x < len(self.matriz[novo_y]):
-            if self.matriz[novo_y][novo_x] is not None:
+        if 0 <= novo_x < len(self.matriz[self.pos_y]):
+            if self.matriz[self.pos_y][novo_x] is not None:
                 # Atualiza as coordenadas da sala atual
                 self.pos_x = novo_x
-                self.pos_y = novo_y
                 self.ultima_direcao = direcao
 
                 # Teleporta o jogador para a porta correspondente na nova sala
@@ -61,11 +57,7 @@ class Dungeon:
                     sala = self.sala_atual()
                     if sala:
                         # Define a posição do jogador baseada na direção oposta da transição
-                        if direcao == "cima":
-                            self.player.teleportar_para(360, HEIGHT-100)  # Mais longe da porta de baixo
-                        elif direcao == "baixo":
-                            self.player.teleportar_para(360, 100)  # Mais longe da porta de cima
-                        elif direcao == "esquerda":
+                        if direcao == "esquerda":
                             self.player.teleportar_para(WIDTH-100, 320)  # Mais longe da porta direita
                         elif direcao == "direita":
                             self.player.teleportar_para(100, 320)  # Mais longe da porta esquerda
@@ -83,9 +75,9 @@ class Dungeon:
             if self.player:
                 self.player.desenhar(tela)
                 
-            # Desenha o nome da sala atual
+            # Desenha o nome da sala atual e número da dungeon
             fonte = pygame.font.Font(None, 36)
-            texto = fonte.render(f"Sala: {sala.nome}", True, WHITE)
+            texto = fonte.render(f"Dungeon {self.dungeon_num} - Sala: {sala.nome}", True, WHITE)
             tela.blit(texto, (10, 10))
     
     def passagem_porta(self, dx, dy):
