@@ -2,7 +2,7 @@ import pygame
 from os import path
 from Classes.Parede import Parede
 from Classes.Kamikaze import Kamikaze
-from config import HEIGHT, WIDTH, LARGURA, ALTURA
+from config import HEIGHT, WIDTH
 
 class Sala:
     def __init__(self, nome, portas, imagem_sala=None, paredes=None, inimigos=None, player_spawn=(400, 300)):
@@ -10,16 +10,22 @@ class Sala:
         self.portas = portas
         self.paredes = []
         self.inimigos = []
+        self.objetos = []  # Inicializa a lista de objetos
         self.player_spawn = player_spawn
         self.areas_portas = {}  # Áreas específicas para as portas
         
         # Carrega a imagem da sala se fornecida
         if imagem_sala:
-            self.imagem = pygame.image.load(path.join("img", "salas", imagem_sala)).convert()
-            self.rect = self.imagem.get_rect()
+            try:
+                self.imagem = pygame.image.load(path.join("Mapas", imagem_sala)).convert()
+                self.rect = self.imagem.get_rect()
+            except:
+                print(f"Erro ao carregar imagem da sala: {imagem_sala}")
+                self.imagem = None
+                self.rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
         else:
             self.imagem = None
-            self.rect = pygame.Rect(0, 0, LARGURA, ALTURA)
+            self.rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
         
         # Adiciona as paredes padrão da sala
         self._criar_paredes_padrao()
@@ -37,32 +43,52 @@ class Sala:
                     self.inimigos.append(Kamikaze(*inimigo))
     
     def _criar_paredes_padrao(self):
-        # Adiciona paredes ao redor da sala
-        self.paredes.append(Parede(0, 0, WIDTH, 16))  # Parede superior
-        self.paredes.append(Parede(0, HEIGHT-16, WIDTH, 16))  # Parede inferior
-        self.paredes.append(Parede(0, 0, 16, HEIGHT))  # Parede esquerda
-        self.paredes.append(Parede(WIDTH-16, 0, 16, HEIGHT))  # Parede direita
+        # Define as alturas das paredes (em pixels, onde cada bloco é 32x32)
+        if self.nome == "Spawn":
+            # No Spawn: parede superior 3 blocos (96px), outras 2 blocos (64px)
+            self.paredes.append(Parede(0, 0, WIDTH, 96))  # Parede superior (3 blocos)
+            self.paredes.append(Parede(0, HEIGHT-64, WIDTH, 64))  # Parede inferior (2 blocos)
+            self.paredes.append(Parede(0, 0, 64, HEIGHT))  # Parede esquerda (2 blocos)
+            self.paredes.append(Parede(WIDTH-64, 0, 64, HEIGHT))  # Parede direita (2 blocos)
+        else:
+            # Nas outras salas: parede superior 2 blocos (64px), outras 3 blocos (96px)
+            self.paredes.append(Parede(0, 0, WIDTH, 64))  # Parede superior (2 blocos)
+            self.paredes.append(Parede(0, HEIGHT-32, WIDTH, 32))  # Parede inferior (1 bloco)
+            self.paredes.append(Parede(0, 0, 32, HEIGHT))  # Parede esquerda (3 blocos)
+            self.paredes.append(Parede(WIDTH-96, 0, 32, HEIGHT))  # Parede direita (3 blocos)
         
         # Define áreas das portas
         if self.portas.get("cima"):
             self.areas_portas["cima"] = pygame.Rect(280, 0, 80, 16)
         else:
-            self.paredes.append(Parede(280, 0, 80, 16))
+            if self.nome == "Spawn":
+                self.paredes.append(Parede(280, 0, 80, 96))  # Parede superior (3 blocos)
+            else:
+                self.paredes.append(Parede(280, 0, 80, 64))  # Parede superior (2 blocos)
             
         if self.portas.get("baixo"):
             self.areas_portas["baixo"] = pygame.Rect(280, HEIGHT-16, 80, 16)
         else:
-            self.paredes.append(Parede(280, HEIGHT-16, 80, 16))
+            if self.nome == "Spawn":
+                self.paredes.append(Parede(280, HEIGHT-64, 80, 64))  # Parede inferior (2 blocos)
+            else:
+                self.paredes.append(Parede(280, HEIGHT-32, 80, 32))  # Parede inferior (1 bloco)
             
         if self.portas.get("esquerda"):
             self.areas_portas["esquerda"] = pygame.Rect(0, 280, 16, 80)
         else:
-            self.paredes.append(Parede(0, 280, 16, 80))
+            if self.nome == "Spawn":
+                self.paredes.append(Parede(0, 280, 64, 80))  # Parede esquerda (2 blocos)
+            else:
+                self.paredes.append(Parede(0, 280, 96, 80))  # Parede esquerda (3 blocos)
             
         if self.portas.get("direita"):
             self.areas_portas["direita"] = pygame.Rect(WIDTH-16, 280, 16, 80)
         else:
-            self.paredes.append(Parede(WIDTH-16, 280, 16, 80))
+            if self.nome == "Spawn":
+                self.paredes.append(Parede(WIDTH-64, 280, 64, 80))  # Parede direita (2 blocos)
+            else:
+                self.paredes.append(Parede(WIDTH-96, 280, 96, 80))  # Parede direita (3 blocos)
     
     def verificar_porta(self, player_rect):
         if not player_rect:  # Verifica se o rect é válido
@@ -85,19 +111,19 @@ class Sala:
         for parede in self.paredes:
             parede.desenhar(tela)
         
-        # Desenha as portas
-        for area in self.areas_portas.values():
-            pygame.draw.rect(tela, (200, 200, 200), area)
-        
         # Desenha os inimigos
         for inimigo in self.inimigos:
             inimigo.desenhar(tela)
+            
+        # Desenha os objetos da sala
+        for objeto in self.objetos:
+            objeto.desenhar(tela)
     
     def atualizar(self, player):
         if not player:  # Verifica se o player é válido
             return
             
-        # Update all enemies in the room
+        # Atualiza todos os inimigos na sala
         for inimigo in self.inimigos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração
             inimigo.atualizar(player)
             if inimigo.rect.colliderect(player.rect):
