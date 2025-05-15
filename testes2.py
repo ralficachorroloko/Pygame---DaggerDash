@@ -46,7 +46,7 @@ def tela_teste2(tela):
     dungeon.adicionar_sala(sala_diagonal, 1, 1)   # Sala diagonal
 
     pygame.mixer.init()
-    pygame.mixer.music.load(path.join('8bitmusic.mp3'))
+    pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  
 
     clock = pygame.time.Clock()

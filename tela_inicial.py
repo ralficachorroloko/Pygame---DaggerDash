@@ -13,7 +13,7 @@ from math import *
 def tela_inicio(tela):
 
     pygame.mixer.init()
-    pygame.mixer.music.load(path.join('8bitmusic.mp3'))
+    pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  
 
     clock = pygame.time.Clock()

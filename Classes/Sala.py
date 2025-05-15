@@ -2,16 +2,24 @@ import pygame
 from os import path
 from Classes.Parede import Parede
 from Classes.Kamikaze import Kamikaze
-from config import HEIGHT, WIDTH
+from config import HEIGHT, WIDTH, LARGURA, ALTURA
 
 class Sala:
-    def __init__(self, nome, portas, paredes=None, inimigos=None, player_spawn=(400, 300)):
+    def __init__(self, nome, portas, imagem_sala=None, paredes=None, inimigos=None, player_spawn=(400, 300)):
         self.nome = nome
         self.portas = portas
         self.paredes = []
         self.inimigos = []
         self.player_spawn = player_spawn
         self.areas_portas = {}  # Áreas específicas para as portas
+        
+        # Carrega a imagem da sala se fornecida
+        if imagem_sala:
+            self.imagem = pygame.image.load(path.join("img", "salas", imagem_sala)).convert()
+            self.rect = self.imagem.get_rect()
+        else:
+            self.imagem = None
+            self.rect = pygame.Rect(0, 0, LARGURA, ALTURA)
         
         # Adiciona as paredes padrão da sala
         self._criar_paredes_padrao()
@@ -69,6 +77,10 @@ class Sala:
         if not tela:  # Verifica se a tela é válida
             return
             
+        # Desenha a imagem da sala se existir
+        if self.imagem:
+            tela.blit(self.imagem, (0, 0))
+        
         # Desenha as paredes
         for parede in self.paredes:
             parede.desenhar(tela)
@@ -90,6 +102,10 @@ class Sala:
             inimigo.atualizar(player)
             if inimigo.rect.colliderect(player.rect):
                 self.inimigos.remove(inimigo)
+        
+        # Atualiza todos os objetos da sala
+        for objeto in self.objetos:
+            objeto.atualizar()
     
     def verificar_colisao(self, player, pos_anterior):
         if not player or not pos_anterior:  # Verifica se os parâmetros são válidos
@@ -101,3 +117,12 @@ class Sala:
                 player.rect.topleft = pos_anterior
                 return True
         return False
+
+    def adicionar_objeto(self, objeto):
+        self.objetos.append(objeto)
+        
+    def adicionar_porta(self, porta):
+        self.portas.append(porta)
+        
+    def get_rect(self):
+        return self.rect
