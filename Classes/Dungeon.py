@@ -25,7 +25,7 @@ class Dungeon:
         if self.player is None:
             self.pos_x = x
             self.pos_y = y
-            self.player = Player(sala.player_spawn[0], sala.player_spawn[1], "idle.png", 10, (32, 32))
+            self.player = Player(sala.player_spawn[0], sala.player_spawn[1], "idle.png", 5, (32, 32))
     
     def sala_atual(self):
         if 0 <= self.pos_y < len(self.matriz) and 0 <= self.pos_x < len(self.matriz[self.pos_y]):

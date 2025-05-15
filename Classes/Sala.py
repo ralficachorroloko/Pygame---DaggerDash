@@ -46,23 +46,24 @@ class Sala:
         # Define as alturas das paredes (em pixels, onde cada bloco é 32x32)
         if self.nome == "Spawn":
             # No Spawn: parede superior 3 blocos (96px), outras 2 blocos (64px)
-            self.paredes.append(Parede(0, 0, WIDTH, 96))  # Parede superior (3 blocos)
-            self.paredes.append(Parede(0, HEIGHT-64, WIDTH, 64))  # Parede inferior (2 blocos)
-            self.paredes.append(Parede(0, 0, 64, HEIGHT))  # Parede esquerda (2 blocos)
-            self.paredes.append(Parede(WIDTH-64, 0, 64, HEIGHT))  # Parede direita (2 blocos)
+            self.paredes.append(Parede(0, 0, WIDTH, 64))  # Parede superior
+            self.paredes.append(Parede(0, HEIGHT-64, WIDTH, 64))  # Parede inferior 
+            self.paredes.append(Parede(0, 0, 64, HEIGHT))  # Parede esquerda 
+            self.paredes.append(Parede(WIDTH-64, 0, 64, HEIGHT))  # Parede direita 
         else:
-            # Nas outras salas: parede superior 2 blocos (64px), outras 3 blocos (96px)
-            self.paredes.append(Parede(0, 0, WIDTH, 64))  # Parede superior (2 blocos)
-            self.paredes.append(Parede(0, HEIGHT-32, WIDTH, 32))  # Parede inferior (1 bloco)
-            self.paredes.append(Parede(0, 0, 32, HEIGHT))  # Parede esquerda (3 blocos)
-            self.paredes.append(Parede(WIDTH-96, 0, 32, HEIGHT))  # Parede direita (3 blocos)
+            # Nas outras salas: parede superior 2 blocos (64px), outras 1 blocos (32px)
+            self.paredes.append(Parede(0, 0, WIDTH, 64))  # Parede superior 
+            self.paredes.append(Parede(0, HEIGHT-32, WIDTH, 32))  # Parede inferior 
+            self.paredes.append(Parede(0, 0, 32, HEIGHT))  # Parede esquerda 
+            self.paredes.append(Parede(WIDTH-24, 0, 48, HEIGHT))  # Parede direita 
         
         # Define áreas das portas
         if self.portas.get("cima"):
             self.areas_portas["cima"] = pygame.Rect(280, 0, 80, 16)
         else:
             if self.nome == "Spawn":
-                self.paredes.append(Parede(280, 0, 80, 96))  # Parede superior (3 blocos)
+                # Não adiciona parede extra pois já existe a parede principal
+                pass
             else:
                 self.paredes.append(Parede(280, 0, 80, 64))  # Parede superior (2 blocos)
             
@@ -70,7 +71,8 @@ class Sala:
             self.areas_portas["baixo"] = pygame.Rect(280, HEIGHT-16, 80, 16)
         else:
             if self.nome == "Spawn":
-                self.paredes.append(Parede(280, HEIGHT-64, 80, 64))  # Parede inferior (2 blocos)
+                # Não adiciona parede extra pois já existe a parede principal
+                pass
             else:
                 self.paredes.append(Parede(280, HEIGHT-32, 80, 32))  # Parede inferior (1 bloco)
             
@@ -78,15 +80,18 @@ class Sala:
             self.areas_portas["esquerda"] = pygame.Rect(0, 280, 16, 80)
         else:
             if self.nome == "Spawn":
-                self.paredes.append(Parede(0, 280, 64, 80))  # Parede esquerda (2 blocos)
+                # Não adiciona parede extra pois já existe a parede principal
+                pass
             else:
-                self.paredes.append(Parede(0, 280, 96, 80))  # Parede esquerda (3 blocos)
+                # Não adiciona parede extra pois já existe a parede principal
+                pass
             
         if self.portas.get("direita"):
             self.areas_portas["direita"] = pygame.Rect(WIDTH-16, 280, 16, 80)
         else:
             if self.nome == "Spawn":
-                self.paredes.append(Parede(WIDTH-64, 280, 64, 80))  # Parede direita (2 blocos)
+                # Não adiciona parede extra pois já existe a parede principal
+                pass
             else:
                 self.paredes.append(Parede(WIDTH-96, 280, 96, 80))  # Parede direita (3 blocos)
     
@@ -110,6 +115,10 @@ class Sala:
         # Desenha as paredes
         for parede in self.paredes:
             parede.desenhar(tela)
+        
+        # Desenha as portas em rosa
+        for area in self.areas_portas.values():
+            pygame.draw.rect(tela, (255, 192, 203), area)  # Desenha as portas em rosa
         
         # Desenha os inimigos
         for inimigo in self.inimigos:

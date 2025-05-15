@@ -16,9 +16,9 @@ def tela_teste2(tela):
     
     # Criando as salas
     sala_inicial = Sala(
-        "SALA 1",
+        "Spawn",
         {"direita": True, "baixo": True},
-        imagem_sala='Sala aberta.png'  # Adicionando uma parede no meio da sala
+        imagem_sala='Spawn.png'  # Adicionando uma parede no meio da sala
     )
     
     sala_direita = Sala(
