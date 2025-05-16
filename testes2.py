@@ -6,44 +6,20 @@ from Classes.Espada import *
 from Classes.Kamikaze import *
 from Classes.Dungeon import *
 from Classes.Shoot import *
+from Classes.DungeonData import *
 import pygame
 from config import *
 from math import *
 
 def tela_teste2(tela):
     # Criando a dungeon
-    dungeon = Dungeon()
+    dungeon = Dungeon(dungeon_num=1)  # Usa a dungeon 1
     
-    # Criando as salas
-    sala_inicial = Sala(
-        "Spawn",
-        {"direita": True, "baixo": True},
-        imagem_sala='Spawn.png'  # Adicionando uma parede no meio da sala
-    )
-    
-    sala_direita = Sala(
-        "R1",
-        {"esquerda": True, "baixo": True},
-        inimigos=[(200, 200, 1, (25, 25), 200, "idle.png"),(400, 300, 1, (25, 25), 200, "idle.png")]
-    )
-    
-    sala_baixo = Sala(
-        "R2",
-        {"cima": True, "direita": True},
-        inimigos=[(300, 400, 1, (25, 25), 200, "idle.png")]
-    )
-    
-    sala_diagonal = Sala(
-        "R3",
-        {"cima": True, "esquerda": True},
-        inimigos=[(400, 300, 1, (25, 25), 200, "idle.png")]
-    )
-    
-    # Adicionando as salas à dungeon
-    dungeon.adicionar_sala(sala_inicial, 0, 0)    # Sala inicial
-    dungeon.adicionar_sala(sala_direita, 1, 0)    # Sala à direita
-    dungeon.adicionar_sala(sala_baixo, 0, 1)      # Sala abaixo
-    dungeon.adicionar_sala(sala_diagonal, 1, 1)   # Sala diagonal
+    # Criando as salas usando o sistema de salas disponíveis
+    for i, tipo_sala in enumerate(DUNGEON_MATRIZES[1][0]):
+        sala = criar_sala(tipo_sala)
+        if sala:
+            dungeon.adicionar_sala(sala, i, 0)
 
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
@@ -109,7 +85,7 @@ def tela_teste2(tela):
         
         # Draw everything
         tela.fill((0, 0, 0))  # Limpa a tela com preto
-        dungeon.desenhar(tela)  # Primeiro desenha a dungeon
+        dungeon.desenhar(tela)
         
         # Desenha a espada por último para ficar por cima
         if espada and espada.esta_ativo():

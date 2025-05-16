@@ -3,63 +3,94 @@ from Classes.Kamikaze import Kamikaze
 
 # Dicionário de salas disponíveis para randomização
 SALAS_DISPONIVEIS = {
+    "Spawn": {
+        "nome": "Spawn",
+        "imagem": "Spawn.png",
+        "portas": {
+            "centro": {
+                "x": 384,  # (WIDTH - largura) // 2
+                "y": 280,
+                "largura": 32,
+                "altura": 80
+            }
+        },
+        "imagem": "Spawn.png",
+        "paredes": [
+            (0, 0, 800, 64),      # Parede superior
+            (0, 536, 800, 64),    # Parede inferior
+            (0, 0, 64, 600),      # Parede esquerda
+            (736, 0, 64, 600)     # Parede direita
+        ]
+    },
     "Sala_aberta": {
         "imagem": "Sala aberta.png",
         "nome": "Sala de Inimigos 1",
-        "portas": {"esquerda": True, "direita": True},
+        "portas": {
+            "esquerda": {
+                "x": 0,
+                "y": 280,
+                "largura": 16,
+                "altura": 80
+            },
+            "direita": {
+                "x": 784,
+                "y": 280,
+                "largura": 16,
+                "altura": 80
+            }
+        },
+        "paredes": [
+            (0, 0, 800, 64),      # Parede superior
+            (0, 536, 800, 32),    # Parede inferior
+            (0, 0, 32, 600),      # Parede esquerda
+            (768, 0, 32, 600)     # Parede direita
+        ],
         "inimigos": [
-            # (x, y, velocidade, tamanho, alcance, imagem)
             (400, 300, 2, (32, 32), 200, "kamikaze.png"),
             (500, 400, 2, (32, 32), 200, "kamikaze.png"),
         ]
     },
-    "sala_inimigos_2": {
-        "nome": "Sala de Inimigos 2",
-        "portas": {"esquerda": True, "direita": True},
-        "inimigos": [
-            (300, 200, 2, (32, 32), 200, "kamikaze.png"),
-            (600, 500, 2, (32, 32), 200, "kamikaze.png"),
-            (450, 350, 2, (32, 32), 200, "kamikaze.png"),
-        ]
-    },
-    # Adicione mais variações de salas aqui
 }
 
 # Matrizes das dungeons (7 dungeons lineares)
 DUNGEON_MATRIZES = {
     1: [
-        ["sala_spawn", "Sala_aberta", "sala_boss"],
+        ["Spawn"],
     ],
     2: [
-        ["sala_spawn", "Sala_aberta", "sala_inimigos_2", "sala_boss"],
+        [],
     ],
     3: [
-        ["sala_spawn", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_boss"],
+        [],
     ],
     4: [
-        ["sala_spawn", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_boss"],
+        [],
     ],
     5: [
-        ["sala_spawn", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_boss"],
+        [],
     ],
     6: [
-        ["sala_spawn", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_boss"],
+        [],
     ],
     7: [
-        ["sala_spawn", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_inimigos_2", "Sala_aberta", "sala_boss"],
+        [],
     ],
 }
 
 # Função para criar uma sala a partir do dicionário
 def criar_sala(tipo_sala):
-    if tipo_sala == "sala_spawn":
-        return Sala("Spawn", {"esquerda": True, "direita": True})
-    elif tipo_sala == "sala_boss":
-        return Sala("Boss", {"esquerda": True, "direita": True})
-    elif tipo_sala in SALAS_DISPONIVEIS:
+    if tipo_sala in SALAS_DISPONIVEIS:
         dados = SALAS_DISPONIVEIS[tipo_sala]
         inimigos = []
-        for inimigo_data in dados["inimigos"]:
-            inimigos.append(Kamikaze(*inimigo_data))
-        return Sala(dados['nome'], dados["portas"], inimigos=inimigos, imagem_sala=dados.get('imagem'))
+        if "inimigos" in dados:
+            for inimigo_data in dados["inimigos"]:
+                inimigos.append(Kamikaze(*inimigo_data))
+        # Cria a sala com as configurações personalizadas
+        return Sala(
+            dados['nome'], 
+            dados["portas"], 
+            inimigos=inimigos, 
+            imagem_sala=dados.get('imagem'),
+            paredes=dados.get('paredes', [])  # Lista de paredes personalizadas
+        )
     return None 

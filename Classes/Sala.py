@@ -27,20 +27,31 @@ class Sala:
             self.imagem = None
             self.rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
         
-        # Adiciona as paredes padrão da sala
-        self._criar_paredes_padrao()
-        
-        # Adiciona paredes personalizadas se fornecidas
+        # Adiciona as paredes personalizadas se fornecidas
         if paredes:
             for parede in paredes:
                 if len(parede) == 4:  # Verifica se a parede tem todos os parâmetros necessários
                     self.paredes.append(Parede(*parede))
+        else:
+            # Se não houver paredes personalizadas, cria as paredes padrão
+            self._criar_paredes_padrao()
         
         # Adiciona inimigos personalizados se fornecidos
         if inimigos:
-            for inimigo in inimigos:
-                if len(inimigo) == 6:  # Verifica se o inimigo tem todos os parâmetros necessários
-                    self.inimigos.append(Kamikaze(*inimigo))
+            self.inimigos = inimigos  # Agora recebe diretamente a lista de inimigos já criados
+        
+        # Configura as áreas das portas
+        self._configurar_portas()
+    
+    def _configurar_portas(self):
+        # Configura as áreas das portas baseado no dicionário de portas
+        for nome_porta, dados_porta in self.portas.items():
+            self.areas_portas[nome_porta] = pygame.Rect(
+                dados_porta["x"],
+                dados_porta["y"],
+                dados_porta["largura"],
+                dados_porta["altura"]
+            )
     
     def _criar_paredes_padrao(self):
         # Define as alturas das paredes (em pixels, onde cada bloco é 32x32)
@@ -56,26 +67,6 @@ class Sala:
             self.paredes.append(Parede(0, HEIGHT-32, WIDTH, 32))  # Parede inferior 
             self.paredes.append(Parede(0, 0, 32, HEIGHT))  # Parede esquerda 
             self.paredes.append(Parede(WIDTH-24, 0, 48, HEIGHT))  # Parede direita 
-        
-        # Define áreas das portas
-        if self.portas.get("esquerda"):
-            self.areas_portas["esquerda"] = pygame.Rect(0, 280, 16, 80)
-        else:
-            if self.nome == "Spawn":
-                # Não adiciona parede extra pois já existe a parede principal
-                pass
-            else:
-                # Não adiciona parede extra pois já existe a parede principal
-                pass
-            
-        if self.portas.get("direita"):
-            self.areas_portas["direita"] = pygame.Rect(WIDTH-16, 280, 16, 80)
-        else:
-            if self.nome == "Spawn":
-                # Não adiciona parede extra pois já existe a parede principal
-                pass
-            else:
-                self.paredes.append(Parede(WIDTH-96, 280, 96, 80))  # Parede direita (3 blocos)
     
     def verificar_porta(self, player_rect):
         if not player_rect:  # Verifica se o rect é válido
