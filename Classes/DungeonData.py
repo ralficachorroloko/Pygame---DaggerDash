@@ -1,6 +1,22 @@
 from Classes.Sala import Sala
 from Classes.Kamikaze import Kamikaze
 
+
+Default_portas = {
+            "esquerda": {
+                "x": 0,
+                "y": 280-64,
+                "largura": 40,
+                "altura": 96+32+16
+            },
+            "direita": {
+                "x": 784-20,
+                "y": 280-64,
+                "largura": 35,
+                "altura": 96+32+16
+            }
+}
+
 # Dicionário de salas disponíveis para randomização
 SALAS_DISPONIVEIS = {
     "Spawn": {
@@ -8,9 +24,9 @@ SALAS_DISPONIVEIS = {
         "imagem": "Spawn.png",
         "portas": {
             "centro": {
-                "x": 384,  # (WIDTH - largura) // 2
+                "x": 624,
                 "y": 280,
-                "largura": 32,
+                "largura": 64,
                 "altura": 80
             }
         },
@@ -24,38 +40,35 @@ SALAS_DISPONIVEIS = {
     },
     "Sala_aberta": {
         "imagem": "Sala aberta.png",
-        "nome": "Sala de Inimigos 1",
-        "portas": {
-            "esquerda": {
-                "x": 0,
-                "y": 280,
-                "largura": 16,
-                "altura": 80
-            },
-            "direita": {
-                "x": 784,
-                "y": 280,
-                "largura": 16,
-                "altura": 80
-            }
-        },
+        "nome": "Sala_aberta",
+        "portas": Default_portas,
         "paredes": [
             (0, 0, 800, 64),      # Parede superior
             (0, 536, 800, 32),    # Parede inferior
             (0, 0, 32, 600),      # Parede esquerda
             (768, 0, 32, 600)     # Parede direita
         ],
-        "inimigos": [
-            (400, 300, 2, (32, 32), 200, "kamikaze.png"),
-            (500, 400, 2, (32, 32), 200, "kamikaze.png"),
-        ]
+    },
+    'Sala_esqueletos': {
+        "imagem": "Corredor esqueletos.png",
+        "nome": "Sala_esqueletos",
+        "portas": Default_portas,
+        "paredes": [
+            (0, 0, 800, 64),      # Parede superior
+            (0, 536, 800, 32),    # Parede inferior
+            (0, 0, 32, 600),      # Parede esquerda
+            (768, 0, 32, 600),     # Parede direita
+
+            (0, 32*5, 800, 30),     # transversal superior
+            (0, 32*11, 800, 30)     # transversal superior
+        ],
     },
 }
 
 # Matrizes das dungeons (7 dungeons lineares)
 DUNGEON_MATRIZES = {
     1: [
-        ["Spawn"],
+        ["Sala_aberta", "Sala_esqueletos"],
     ],
     2: [
         [],
