@@ -41,6 +41,27 @@ class Dungeon:
             dx = -1
         elif direcao == "direita":
             dx = 1
+        elif direcao == "centro":
+            # Se for a porta central da sala de transição ou spawn, avança para a próxima dungeon
+            sala_atual = self.sala_atual()
+            if sala_atual and (sala_atual.nome == "Transição de andar" or sala_atual.nome == "Spawn"):
+                self.dungeon_num += 1
+                if self.dungeon_num <= 7:  # Verifica se ainda há dungeons disponíveis
+                    # Limpa a matriz atual
+                    self.matriz = []
+                    self.pos_x = 0
+                    self.pos_y = 0
+                    # Carrega a nova matriz da próxima dungeon
+                    from Classes.DungeonData import DUNGEON_MATRIZES
+                    nova_matriz = DUNGEON_MATRIZES[self.dungeon_num]
+                    # Cria as salas da nova dungeon
+                    for i, tipo_sala in enumerate(nova_matriz[0]):
+                        from Classes.DungeonData import criar_sala
+                        sala = criar_sala(tipo_sala)
+                        if sala:
+                            self.adicionar_sala(sala, i, 0)
+                    return True
+            return False
 
         # calcula as coordenadas da sala de destino na matriz
         novo_x = self.pos_x + dx

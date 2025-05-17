@@ -24,10 +24,10 @@ SALAS_FIXAS = {
         "imagem": "Spawn.png",
         "portas": {
             "centro": {
-                "x": 624,
-                "y": 28,
-                "largura": 64,
-                "altura": 80
+                "x": 610,
+                "y": 288 - 32,
+                "largura": 96,
+                "altura": 80+32+16
             }
         },
         "imagem": "Spawn.png",
@@ -214,25 +214,25 @@ SALAS_RANDOMIZADAS = {
 # Matrizes das dungeons (7 dungeons lineares)
 DUNGEON_MATRIZES = {
     1: [
-        ["Começo andar", "sala_random",'sala_random','sala_random', "Transição_andar"],
+        ["Spawn"],
     ],
     2: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
     3: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
     4: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
     5: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
     6: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
     7: [
-        [],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
     ],
 }
 

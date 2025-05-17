@@ -89,10 +89,6 @@ class Sala:
         for parede in self.paredes:
             parede.desenhar(tela)
         
-        # Desenha as portas em rosa
-        for area in self.areas_portas.values():
-            pygame.draw.rect(tela, (255, 192, 203), area)  # Desenha as portas em rosa
-        
         # Desenha os inimigos
         for inimigo in self.inimigos:
             inimigo.desenhar(tela)
