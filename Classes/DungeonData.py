@@ -61,7 +61,25 @@ SALAS_DISPONIVEIS = {
             (0, 0, 32, 600),      # Parede esquerda
             (768, 0, 32, 600)     # Parede direita
         ],
-    },       
+    },   
+    'Começo andar':{
+        "nome": "Começo andar",
+        "imagem": "Começo andar.png",
+        "portas": {
+                "direita": {
+                "x": 784-20,
+                "y": 280-64,
+                "largura": 35,
+                "altura": 96+32+16
+            }
+        },
+        "paredes": [            
+            (0, 0, 800, 64),      # Parede superior
+            (0, 544, 800, 32),    # Parede inferior
+            (0, 0, 32, 600),      # Parede esquerda
+            (768, 0, 32, 600)     # Parede direita
+        ]
+    },
     "Sala_aberta": {
         "imagem": "Sala aberta.png",
         "nome": "Sala_aberta",
@@ -163,15 +181,37 @@ SALAS_DISPONIVEIS = {
             (32*6, 32*13, 96, 64),
             (32*17, 32*13, 96, 64),
 
-            (318, 32*8, 63*3, 31*4),
+            (322, 33*8, 62*3, 29*4),
 
+        ],
+    }, 
+    'Sala_estranha':{
+        "imagem": "Sala estranha.png",
+        "nome": "Sala_estranha",
+        "portas": Default_portas,
+        "paredes": [
+            (0, 0, 800, 64),      # Parede superior
+            (0, 544, 800, 32),    # Parede inferior
+            (0, 0, 32, 600),      # Parede esquerda
+            (768, 0, 32, 600),     # Parede direita
+
+            (32*6, 32*5,31*15,63),
+            (32*6, 32*11,31*15,63),
+
+            (32*6, 32*7,31*4,31),
+            (32*17, 32*7,31*4,31),
+
+            (32*6, 32*10,31*4,31),
+            (32*17, 32*10,31*4,31),
+            
+            
         ],
     }
 }
 # Matrizes das dungeons (7 dungeons lineares)
 DUNGEON_MATRIZES = {
     1: [
-        ["Sala_aberta", "Sala_dinheiro", "Transição_andar"],
+        ["Começo andar", "Sala_dinheiro", "Transição_andar"],
     ],
     2: [
         [],
