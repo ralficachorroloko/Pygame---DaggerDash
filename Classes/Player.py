@@ -2,42 +2,72 @@ from os import path
 import pygame
 
 class Player:
-    def __init__(self, x, y, imagem, velocidade, tamanho):
-        img = pygame.image.load(path.join("img", "player", imagem)).convert_alpha()
-        self.imagem = pygame.transform.scale(img, tamanho)
-        self.imagem_original = self.imagem.copy()  # Guarda a imagem original
-        self.rect = self.imagem.get_rect(topleft=(x, y))
+    def __init__(self, x, y, imagem_idle, velocidade, tamanho):
+        # Carrega as imagens de idle e walk
+        idle_img = pygame.image.load(path.join("img", "player", imagem_idle)).convert_alpha()
+        self.idle_imagem = pygame.transform.scale(idle_img, tamanho)
+
+        walk_img = pygame.image.load(path.join("img", "player", "walk.png")).convert_alpha()
+        self.walk_imagem = pygame.transform.scale(walk_img, tamanho)
+
+        self.imagem_original = self.idle_imagem
+        self.rect = self.imagem_original.get_rect(topleft=(x, y))
+        self.estado = "idle"
 
         self.velocidade = velocidade 
-        self.velocidade_original = velocidade  # Guarda a velocidade original
-
+        self.velocidade_original = velocidade
         self.direcao = None
-        
+        self.espelhado = False
+
+        # Controle de animação
+        self.anim_frame = 0
+        self.anim_intervalo = 10  # Frames entre as trocas
+
+        # Dash
         self.dash_ativo = False
         self.dash_frames = 0
-        self.dash_duracao = 8  # Número de frames que o dash vai durar
-        self.dash_cooldown = 0  # Contador para o cooldown
-        self.dash_cooldown_max = 120  # 2 segundos (60 frames por segundo * 2)
-        self.dash_direcao = [0, 0]  # Direção do dash [dx, dy]
+        self.dash_duracao = 8
+        self.dash_cooldown = 0
+        self.dash_cooldown_max = 120
+        self.dash_direcao = [0, 0]
 
         self.tem_arco = False
 
     def desenhar(self, tela):
-        if self.dash_ativo:
-            # Cria uma cópia da imagem com transparência
-            imagem_dash = self.imagem_original.copy()
-            imagem_dash.set_alpha(128)  # Define a transparência (0-255)
-            tela.blit(imagem_dash, self.rect)
+        imagem_base = self.walk_imagem if self.estado == "walk" else self.idle_imagem
+        if self.espelhado:
+            imagem_a_usar = pygame.transform.flip(imagem_base, True, False)
         else:
-            tela.blit(self.imagem, self.rect)
+            imagem_a_usar = imagem_base
+
+        if self.dash_ativo:
+            imagem_a_usar = imagem_a_usar.copy()
+            imagem_a_usar.set_alpha(128)
+
+        tela.blit(imagem_a_usar, self.rect)
 
     def mover(self, dx, dy):
+        if dx != 0 or dy != 0:
+            # Alterna entre walk e idle a cada intervalo
+            self.anim_frame += 1
+            if self.anim_frame >= self.anim_intervalo:
+                self.estado = "walk" if self.estado == "idle" else "idle"
+                self.anim_frame = 0
+        else:
+            self.estado = "idle"
+            self.anim_frame = 0
+
+        # Atualiza espelhamento
+        if dx > 0:
+            self.espelhado = False
+        elif dx < 0:
+            self.espelhado = True
+
+        # Movimento
         if self.dash_ativo:
-            # Durante o dash, usa a direção armazenada
             self.rect.x += self.dash_direcao[0] * self.velocidade
             self.rect.y += self.dash_direcao[1] * self.velocidade
         else:
-            # Movimento normal
             self.rect.x += dx * self.velocidade
             self.rect.y += dy * self.velocidade
 
@@ -45,8 +75,7 @@ class Player:
         self.rect.topleft = (x, y)
     
     def dash(self):
-        if not self.dash_ativo and self.dash_cooldown <= 0:  # Só ativa se não estiver ativo e cooldown acabou
-            # Armazena a direção atual do movimento
+        if not self.dash_ativo and self.dash_cooldown <= 0:
             if self.direcao == "w":
                 self.dash_direcao = [0, -1]
             elif self.direcao == "s":
@@ -56,7 +85,6 @@ class Player:
             elif self.direcao == "d":
                 self.dash_direcao = [1, 0]
             else:
-                # Se não houver direção definida, não ativa o dash
                 return
                 
             self.dash_ativo = True
@@ -69,8 +97,8 @@ class Player:
             if self.dash_frames >= self.dash_duracao:
                 self.dash_ativo = False
                 self.velocidade = self.velocidade_original
-                self.dash_cooldown = self.dash_cooldown_max  # Inicia o cooldown
+                self.dash_cooldown = self.dash_cooldown_max
         
-        if self.dash_cooldown > 0:  # Atualiza o cooldown
+        if self.dash_cooldown > 0:
             self.dash_cooldown -= 1
 
