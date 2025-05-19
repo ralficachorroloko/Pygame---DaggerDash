@@ -65,87 +65,98 @@ class Esqueleto:
         self.player_norange = False
         
         # Atributos para movimento
-        self.velocidade = 2  # Mais lento que o player
-        self.velocidade_retorno = 1  # Velocidade ao voltar para o spawn
-        self.voltando_spawn = False
+        self.velocidade = 2  # Velocidade ao fugir do player
+        self.velocidade_patrulha = 1.5  # Velocidade durante a patrulha
         
-        # Atributos para órbita
-        self.raio_orbita = 30  # Raio da órbita ao redor do spawn
-        self.angulo_orbita = 0  # Ângulo atual na órbita
-        self.velocidade_orbita = 0.02  # Velocidade de rotação na órbita
+        # Atributos para comportamento
+        self.distancia_fuga = 200  # Distância mínima que tenta manter do player
+        self.estado_movimento = "patrulhando"  # Estados: "patrulhando", "fugindo"
+        self.estado_ataque = "parado"  # Estados: "parado", "atacando"
         
-        # Atributos para movimento
-        self.direcao_x = 1  # Começa movendo para direita
-        self.direcao_y = 0
-        self.tempo_mudanca_direcao = 0
-        self.intervalo_mudanca = 120  # Muda direção a cada 2 segundos (60 FPS)
-        self.distancia_fuga = 70  # Distância mínima que tenta manter do player
+        # Atributos para patrulha
+        self.direcao_patrulha = 1  # 1 para direita, -1 para esquerda
+        self.distancia_patrulha = 100  # Distância que percorre em cada direção
+        self.pos_inicial_patrulha_x = x  # Posição inicial da patrulha
 
-    def atualizar_orbita(self):
-        # Atualiza o ângulo da órbita
-        self.angulo_orbita += self.velocidade_orbita
+    def atualizar_patrulha(self, paredes):
+        # Guarda a posição anterior
+        pos_anterior_x = self.rect.centerx
         
-        # Calcula a nova posição na órbita
-        self.rect.centerx = self.pos_inicial_x + cos(self.angulo_orbita) * self.raio_orbita
-        self.rect.centery = self.pos_inicial_y + sin(self.angulo_orbita) * self.raio_orbita
+        # Move na direção atual da patrulha
+        self.rect.centerx += self.direcao_patrulha * self.velocidade_patrulha
+        
+        # Verifica colisão
+        if self.verificar_colisao_paredes(paredes):
+            self.rect.centerx = pos_anterior_x
+            self.direcao_patrulha *= -1
+            self.pos_inicial_patrulha_x = self.rect.centerx
+        # Verifica se precisa mudar de direção
+        elif abs(self.rect.centerx - self.pos_inicial_patrulha_x) >= self.distancia_patrulha:
+            self.direcao_patrulha *= -1
+            self.pos_inicial_patrulha_x = self.rect.centerx
 
-    def verificar_distancia_spawn(self):
-        dx = self.pos_inicial_x - self.rect.centerx
-        dy = self.pos_inicial_y - self.rect.centery
-        return hypot(dx, dy)
-
-    def detectar_player(self, player):
+    def verificar_distancia_player(self, player):
         dx = player.rect.centerx - self.rect.centerx
         dy = player.rect.centery - self.rect.centery
+        return hypot(dx, dy)
+
+    def mover_em_direcao(self, alvo_x, alvo_y, velocidade, paredes):
+        # Guarda a posição anterior
+        pos_anterior_x = self.rect.centerx
+        pos_anterior_y = self.rect.centery
+        
+        # Calcula o movimento
+        dx = alvo_x - self.rect.centerx
+        dy = alvo_y - self.rect.centery
         distancia = hypot(dx, dy)
         
-        self.player_detectado = distancia <= self.alcance_visao
+        if distancia > 0:
+            # Tenta mover no eixo X
+            self.rect.centerx += (dx / distancia) * velocidade
+            if self.verificar_colisao_paredes(paredes):
+                self.rect.centerx = pos_anterior_x
+            
+            # Tenta mover no eixo Y
+            self.rect.centery += (dy / distancia) * velocidade
+            if self.verificar_colisao_paredes(paredes):
+                self.rect.centery = pos_anterior_y
+
+    def detectar_player(self, player):
+        distancia_player = self.verificar_distancia_player(player)
         
-        # Se o player estiver muito perto, foge
-        if distancia < self.distancia_fuga:
-            self.direcao_x = -dx / distancia
-            self.direcao_y = -dy / distancia
-            self.voltando_spawn = False
-        # Se o player estiver muito longe, volta para o spawn
-        elif distancia > self.alcance_visao * 1.5:  # 50% além do alcance de visão
-            self.voltando_spawn = True
-            dx = self.pos_inicial_x - self.rect.centerx
-            dy = self.pos_inicial_y - self.rect.centery
-            distancia = hypot(dx, dy)
-            if distancia > 0:
-                self.direcao_x = dx / distancia
-                self.direcao_y = dy / distancia
-        elif self.player_detectado:
-            self.imagem_atual = self.imagem_atirando
-            self.voltando_spawn = False
+        # Atualiza estado de movimento baseado na distância do player
+        if distancia_player < self.distancia_fuga:
+            self.estado_movimento = "fugindo"
         else:
-            self.imagem_atual = self.imagem_standby
-            self.voltando_spawn = False
+            self.estado_movimento = "patrulhando"
         
-        return distancia
+        # Atualiza estado de ataque
+        if distancia_player <= self.alcance_visao:
+            self.estado_ataque = "atacando"
+            self.imagem_atual = self.imagem_atirando
+        else:
+            self.estado_ataque = "parado"
+            self.imagem_atual = self.imagem_standby
+        
+        return distancia_player
 
     def verificar_colisao_paredes(self, paredes):
         # Guarda a posição anterior
         pos_anterior_x = self.rect.centerx
         pos_anterior_y = self.rect.centery
         
-        # Se estiver voltando ao spawn ou fugindo, verifica colisão
-        if self.voltando_spawn or self.player_detectado:
-            # Tenta mover
-            self.rect.centerx += self.direcao_x * (self.velocidade_retorno if self.voltando_spawn else self.velocidade)
-            self.rect.centery += self.direcao_y * (self.velocidade_retorno if self.voltando_spawn else self.velocidade)
-            
-            # Verifica colisão com cada parede
-            for parede in paredes:
-                if self.rect.colliderect(pygame.Rect(parede)):
-                    # Se colidiu, volta para a posição anterior
-                    self.rect.centerx = pos_anterior_x
-                    self.rect.centery = pos_anterior_y
-                    # Se estiver voltando ao spawn, tenta outro caminho
-                    if self.voltando_spawn:
-                        self.voltando_spawn = False
-                        self.atualizar_orbita()
-                    break
+        # Verifica colisão com cada parede
+        for parede in paredes:
+            parede_rect = pygame.Rect(parede)
+            if self.rect.colliderect(parede_rect):
+                # Se colidiu, volta para a posição anterior
+                self.rect.centerx = pos_anterior_x
+                self.rect.centery = pos_anterior_y
+                # Se estiver patrulhando, muda de direção
+                if self.estado_movimento == "patrulhando":
+                    self.direcao_patrulha *= -1
+                return True
+        return False
 
     def atirar(self, player):
         dx = player.rect.centerx - self.rect.centerx
@@ -161,27 +172,19 @@ class Esqueleto:
     def atualizar(self, player, paredes):
         self.detectar_player(player)
         
-        # Se não estiver detectando o player e não estiver voltando ao spawn
-        if not self.player_detectado and not self.voltando_spawn:
-            # Verifica se está muito longe do spawn
-            if self.verificar_distancia_spawn() > self.raio_orbita * 2:
-                # Se estiver muito longe, volta ao spawn
-                self.voltando_spawn = True
-                dx = self.pos_inicial_x - self.rect.centerx
-                dy = self.pos_inicial_y - self.rect.centery
-                distancia = hypot(dx, dy)
-                if distancia > 0:
-                    self.direcao_x = dx / distancia
-                    self.direcao_y = dy / distancia
-            else:
-                # Se estiver próximo do spawn, orbita
-                self.atualizar_orbita()
-        else:
-            # Atualiza movimento com colisão
-            self.verificar_colisao_paredes(paredes)
+        # Atualiza movimento baseado no estado
+        if self.estado_movimento == "patrulhando":
+            self.atualizar_patrulha(paredes)
+        elif self.estado_movimento == "fugindo":
+            self.mover_em_direcao(
+                self.rect.centerx - (player.rect.centerx - self.rect.centerx),
+                self.rect.centery - (player.rect.centery - self.rect.centery),
+                self.velocidade,
+                paredes
+            )
         
-        # Atualiza tiro
-        if self.player_detectado:
+        # Atualiza tiro independentemente do movimento
+        if self.estado_ataque == "atacando":
             self.tempo_ultimo_tiro += 1
             if self.tempo_ultimo_tiro >= self.tempo_cd:
                 self.atirar(player)
