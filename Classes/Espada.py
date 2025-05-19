@@ -18,17 +18,18 @@ class Espada:
         
         # Define a área de ataque baseada no ângulo
         if -pi/4 <= angulo < pi/4:  # Direita (ângulo entre -45 e 45 graus)
-            self.rect = pygame.Rect(player.rect.right, player.rect.y - 15, 30, player.rect.height + 30)
+            self.rect = pygame.Rect(player.rect.right, player.rect.y - 15, 60, player.rect.height + 30)
         elif pi/4 <= angulo < 3*pi/4:  # Baixo (ângulo entre 45 e 135 graus)
-            self.rect = pygame.Rect(player.rect.x - 15, player.rect.bottom, player.rect.width + 30, 30)
+            self.rect = pygame.Rect(player.rect.x - 15, player.rect.bottom, player.rect.width + 30, 60)
         elif 3*pi/4 <= angulo < 5*pi/4:  # Esquerda (ângulo entre 135 e 225 graus)
-            self.rect = pygame.Rect(player.rect.x - 30, player.rect.y - 15, 30, player.rect.height + 30)
+            self.rect = pygame.Rect(player.rect.x - 60, player.rect.y - 15, 60, player.rect.height + 30)
         else:  # Cima (ângulo entre 225 e 315 graus)
-            self.rect = pygame.Rect(player.rect.x - 15, player.rect.y - 30, player.rect.width + 30, 30)
+            self.rect = pygame.Rect(player.rect.x - 15, player.rect.y - 60, player.rect.width + 30, 60)
 
         # Carrega a imagem da espada
-        self.imagem = pygame.image.load(path.join("img", "player", imagem)).convert_alpha()
-        self.imagem = pygame.transform.scale(self.imagem, (30, 30))
+        self.imagem_original = pygame.image.load(path.join("img", "itens", "espada.png")).convert_alpha()
+        self.imagem_original = pygame.transform.scale(self.imagem_original, (100, 50))  # Espada maior
+        self.imagem = self.imagem_original
 
     def atualizar(self):
         self.duracao -= 1
@@ -37,20 +38,25 @@ class Espada:
         if -pi/4 <= self.direcao < pi/4:  # Direita
             self.rect.left = self.player.rect.right
             self.rect.centery = self.player.rect.centery
+            self.imagem = pygame.transform.rotate(self.imagem_original, 270)  # Sem rotação para direita
         elif pi/4 <= self.direcao < 3*pi/4:  # Baixo
             self.rect.top = self.player.rect.bottom
             self.rect.centerx = self.player.rect.centerx
+            self.imagem = pygame.transform.rotate(self.imagem_original, 180)  # 90 graus para baixo
         elif 3*pi/4 <= self.direcao < 5*pi/4:  # Esquerda
             self.rect.right = self.player.rect.left
             self.rect.centery = self.player.rect.centery
+            self.imagem = pygame.transform.rotate(self.imagem_original, 270)  # 180 graus para esquerda
         else:  # Cima
             self.rect.bottom = self.player.rect.top
             self.rect.centerx = self.player.rect.centerx
+            self.imagem = pygame.transform.rotate(self.imagem_original, 270)  # -90 graus para cima
 
     def esta_ativo(self):
         return self.duracao > 0
     
     def desenhar(self, tela):
-        pygame.draw.rect(tela, (255, 255, 0), self.rect)  # Desenha um retângulo amarelo
+        # Desenha a imagem da espada
+        tela.blit(self.imagem, self.rect)
 
         
