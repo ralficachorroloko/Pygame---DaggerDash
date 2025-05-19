@@ -103,7 +103,7 @@ class Sala:
             
         # Atualiza todos os inimigos na sala
         for inimigo in self.inimigos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração
-            inimigo.atualizar(player)
+            inimigo.atualizar(player, self.paredes)
             if inimigo.rect.colliderect(player.rect):
                 self.inimigos.remove(inimigo)
         

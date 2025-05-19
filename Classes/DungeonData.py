@@ -1,5 +1,6 @@
 from Classes.Sala import Sala
 from Classes.Kamikaze import Kamikaze
+from Classes.Esqueleto import Esqueleto
 
 
 Default_portas = {
@@ -120,6 +121,10 @@ SALAS_RANDOMIZADAS = {
             (0, 0, 32, 600),      # Parede esquerda
             (768, 0, 32, 600)     # Parede direita
         ],
+        "inimigos": [
+            (Esqueleto, 400, 300),  # Esqueleto no centro
+            (Esqueleto, 600, 400)   # Esqueleto no canto inferior direito
+        ]
     },
         'Sala_esqueletos': {
         "imagem": "Corredor esqueletos.png",
@@ -217,7 +222,7 @@ DUNGEON_MATRIZES = {
         ["Spawn"],
     ],
     2: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "Sala_aberta", "sala_random", "Transição_andar"],
     ],
     3: [
         ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
@@ -245,13 +250,19 @@ def criar_sala(tipo_sala):
         dados = SALAS_RANDOMIZADAS[tipo_sala]
     elif tipo_sala in SALAS_FIXAS:
         dados = SALAS_FIXAS[tipo_sala]
+    elif tipo_sala in SALAS_RANDOMIZADAS:
+        dados = SALAS_RANDOMIZADAS[tipo_sala]
     else:
         return None
 
     inimigos = []
     if "inimigos" in dados:
         for inimigo_data in dados["inimigos"]:
-            inimigos.append(Kamikaze(*inimigo_data))
+            tipo_inimigo = inimigo_data[0]
+            if tipo_inimigo == Kamikaze:
+                inimigos.append(Kamikaze(*inimigo_data[1:]))
+            elif tipo_inimigo == Esqueleto:
+                inimigos.append(Esqueleto(*inimigo_data[1:]))
     
     # Cria a sala com as configurações personalizadas
     return Sala(
