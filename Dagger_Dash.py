@@ -12,8 +12,9 @@ from math import *
 import random
 from config import *
 from tela_inicial import *
-from testes2 import tela_teste2
+from Game_loop import tela_jogo
 from Classes.Esqueleto import *
+from game_over import tela_game_over
 
 
 pygame.init()
@@ -31,9 +32,12 @@ while state != QUIT:
     if state == INICIO:
         print("Entrando na tela inicial")
         state = tela_inicio(tela)
-    if state == TESTES2:
-        print("Entrando no teste 2")
-        state = tela_teste2(tela)
+    elif state == JOGO:
+        print("Entrando no jogo")
+        state = tela_jogo(tela)
+    elif state == GAME_OVER:
+        print("Entrando na tela de Game Over")
+        state = tela_game_over(tela)
     
 # ===== Finalização =====
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados 

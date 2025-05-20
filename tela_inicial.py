@@ -37,9 +37,9 @@ def tela_inicio(tela):
                 running = False
             if event.type == pygame.KEYDOWN:
 
-                if event.key == pygame.K_2:
-                    print("Pressionou 2 - Mudando para TESTES2")
-                    state = TESTES2
+                if event.key == pygame.K_RETURN:
+                    print("Pressionou enter - Mudando para jogo")   
+                    state = JOGO
                     running = False
 
         tela.fill(BLACK)
@@ -54,9 +54,6 @@ def tela_inicio(tela):
         if mostrar_quadrado == True:
             pygame.draw.rect(tela, BLACK, (160, 400, 500, 150))
             # Adiciona texto para mostrar as opções
-            fonte = pygame.font.Font(None, 36)
-            texto2 = fonte.render("Pressione 2 para Teste 2", True, WHITE)
-            tela.blit(texto2, (200, 460))
 
         pygame.display.flip()
 

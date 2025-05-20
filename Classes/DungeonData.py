@@ -124,7 +124,7 @@ SALAS_RANDOMIZADAS = {
         "inimigos": [
             (Esqueleto, 400, 300),  # Esqueleto no centro
             (Esqueleto, 600, 400),   # Esqueleto no canto inferior direito
-            (Kamikaze, 500, 450, 3)
+            (Kamikaze, 500, 450, 1)
         ]
     },
         'Sala_esqueletos': {

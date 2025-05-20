@@ -63,16 +63,18 @@ class Kamikaze:
             dx = self.direcao * self.velocidade
             dy = 0
 
-            self.rect.x += dx
-            if self._colidiu_com_parede(paredes):
-                self.rect.x -= dx
-                self.direcao *= -1  # Inverte a direção ao colidir
+            # Verifica se atingiu os limites de patrulha
+            if self.rect.x <= self.limite_esquerdo:
+                self.direcao = 1  # Muda para direita
+            elif self.rect.x >= self.limite_direito:
+                self.direcao = -1  # Muda para esquerda
 
         # Movimento e verificação de colisão
         if dx != 0 or dy != 0:
             self.rect.x += dx
             if self._colidiu_com_parede(paredes):
                 self.rect.x -= dx
+                self.direcao *= -1  # Inverte a direção ao colidir
 
             self.rect.y += dy
             if self._colidiu_com_parede(paredes):

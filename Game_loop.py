@@ -11,7 +11,7 @@ import pygame
 from config import *
 from math import *
 
-def tela_teste2(tela):
+def tela_jogo(tela):
     dungeon = Dungeon(dungeon_num=1)
 
     for i, tipo_sala in enumerate(DUNGEON_MATRIZES[1][0]):
@@ -37,6 +37,10 @@ def tela_teste2(tela):
 
     while running:
         clock.tick(FPS)
+
+        # Verifica se o jogador perdeu todas as vidas
+        if jogador.vidas <= 0:
+            return GAME_OVER
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -98,9 +102,11 @@ def tela_teste2(tela):
         for shoot in shoots:
             shoot.desenhar(tela)
 
-        # Desenha as vidas
-        for i in range(jogador.vidas):
+        # Desenha as vidas do jogador
+        for i in range(jogador.vidas):           
             tela.blit(vida_img, (WIDTH - 40 * (i + 1), 10))
 
         pygame.display.flip()
+
+    return QUIT
 

@@ -104,8 +104,12 @@ class Sala:
         # Atualiza todos os inimigos na sala
         for inimigo in self.inimigos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração
             inimigo.atualizar(player, self.paredes)
+            
+            # Verifica colisão com o jogador
             if inimigo.rect.colliderect(player.rect):
-                self.inimigos.remove(inimigo)
+                player.levar_dano()  # Jogador leva dano
+                if isinstance(inimigo, Kamikaze):  # Se for um kamikaze, ele é removido após causar dano
+                    self.inimigos.remove(inimigo)
         
         # Atualiza todos os objetos da sala
         for objeto in self.objetos:

@@ -193,8 +193,12 @@ class Esqueleto:
         # Atualiza flechas
         flechas_para_remover = []
         for flecha in self.flechas:
-            if flecha.atualizar():
+            if flecha.atualizar():  # True se passou do alcance
                 flechas_para_remover.append(flecha)
+            elif flecha.rect.colliderect(player.rect):  # Verifica colisão com o jogador
+                player.levar_dano()  # Jogador leva dano
+                flechas_para_remover.append(flecha)  # Remove a flecha após causar dano
+                
         for flecha in flechas_para_remover:
             self.flechas.remove(flecha)
 
