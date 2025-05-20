@@ -28,12 +28,22 @@ def tela_jogo(tela):
     jogador = dungeon.player
     shoots = []
     jogador.tem_arco = True
-    cooldown_shoot = 0
     running = True
 
     # Coração de vida
     vida_img = pygame.image.load(path.join("img", "player", "vida.png")).convert_alpha()
     vida_img = pygame.transform.scale(vida_img, (32, 32))
+
+    # Imagem da flecha para mostrar munição
+    flecha_img = pygame.image.load(path.join("img", "esqueleto", "flecha arqueiro.png")).convert_alpha()
+    flecha_img = pygame.transform.scale(flecha_img, (20, 20))  # Flecha menor para o indicador
+
+    # Variáveis para o sistema de munição e recarga
+    recarregando = False
+    tempo_recarga = 0
+    municao_atual = 3
+    FPS = 60  # Frames por segundo
+    TEMPO_RECARGA = 3 * FPS  # 3 segundos em frames
 
     while running:
         clock.tick(FPS)
@@ -46,8 +56,18 @@ def tela_jogo(tela):
             if event.type == pygame.QUIT:
                 return QUIT
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1 and not espada:
+                if event.button == 1 and not espada:  # Botão esquerdo do mouse
                     espada = Espada(jogador, pygame.mouse.get_pos(), "idle.png")
+                elif event.button == 3 and jogador.tem_arco and not recarregando and municao_atual > 0:  # Botão direito do mouse
+                    shoots.append(Shoot(jogador, pygame.mouse.get_pos(), "bow.png"))
+                    municao_atual -= 1
+                    jogador.estado = "bow"
+                    jogador.shoot_timer = jogador.shoot_duracao
+
+                    # Se acabou a munição, inicia a recarga
+                    if municao_atual <= 0:
+                        recarregando = True
+                        tempo_recarga = TEMPO_RECARGA
 
         # Movimento
         keys = pygame.key.get_pressed()
@@ -70,16 +90,12 @@ def tela_jogo(tela):
         if dx != 0 or dy != 0:
             dungeon.passagem_porta(dx, dy)
 
-        # Disparo com botão direito
-        if pygame.mouse.get_pressed()[2] and jogador.tem_arco and cooldown_shoot == 0:
-            shoots.append(Shoot(jogador, pygame.mouse.get_pos(), "bow.png"))  # Pode trocar imagem depois
-            cooldown_shoot = 15
-
-            jogador.estado = "bow"
-            jogador.shoot_timer = jogador.shoot_duracao
-
-        if cooldown_shoot > 0:
-            cooldown_shoot -= 1
+        # Sistema de munição e recarga
+        if recarregando:
+            tempo_recarga -= 1
+            if tempo_recarga <= 0:
+                recarregando = False
+                municao_atual = 3
 
         # Atualiza e remove tiros se passaram do alcance
         for shoot in shoots[:]:
@@ -89,22 +105,42 @@ def tela_jogo(tela):
         dungeon.atualizar()
         jogador.atualizar()
 
+        # Verifica colisão da espada com inimigos
+        if espada and espada.esta_ativo():
+            espada.atualizar()
+            
+            # Verifica colisão com inimigos na sala atual
+            sala_atual = dungeon.sala_atual()
+            if sala_atual:
+                for inimigo in sala_atual.inimigos[:]:
+                    if espada.rect.colliderect(inimigo.rect):
+                        if isinstance(inimigo, Kamikaze):
+                            sala_atual.inimigos.remove(inimigo)
+                        elif isinstance(inimigo, Esqueleto):
+                            if inimigo.receber_dano(100):  # Dano suficiente para matar
+                                sala_atual.inimigos.remove(inimigo)
+        else:
+            espada = None
+
         # Desenha tudo
         tela.fill((0, 0, 0))
         dungeon.desenhar(tela)
 
-        if espada and espada.esta_ativo():
-            espada.desenhar(tela)
-            espada.atualizar()
-        else:
-            espada = None
-
+        # Desenha os tiros
         for shoot in shoots:
             shoot.desenhar(tela)
 
-        # Desenha as vidas do jogador
-        for i in range(jogador.vidas):           
+        # Desenha a espada por último para ficar por cima
+        if espada and espada.esta_ativo():
+            espada.desenhar(tela)
+
+        # Desenha as vidas
+        for i in range(jogador.vidas):
             tela.blit(vida_img, (WIDTH - 40 * (i + 1), 10))
+
+        # Desenha as flechas de munição no canto inferior direito
+        for i in range(municao_atual):
+            tela.blit(flecha_img, (WIDTH - 30 * (i + 1), HEIGHT - 30))
 
         pygame.display.flip()
 

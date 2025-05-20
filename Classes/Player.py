@@ -44,6 +44,7 @@ class Player:
         self.invencivel = False  # Evita dano múltiplo em um frame
         self.inv_frames = 0      # Tempo de invencibilidade
         self.inv_max = 60        # Duração da invencibilidade 
+        self.flash_dano = 0      # Contador para o efeito de flash vermelho
 
     def desenhar(self, tela):
         if self.estado == "bow":
@@ -61,6 +62,11 @@ class Player:
         if self.dash_ativo:
             imagem_a_usar = imagem_a_usar.copy()
             imagem_a_usar.set_alpha(128)
+
+        # Efeito de flash vermelho quando toma dano
+        if self.flash_dano > 0:
+            imagem_a_usar = imagem_a_usar.copy()
+            imagem_a_usar.fill((255, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
 
         tela.blit(imagem_a_usar, self.rect)
 
@@ -125,6 +131,10 @@ class Player:
             if self.inv_frames <= 0:
                 self.invencivel = False
 
+        # Atualiza o efeito de flash vermelho
+        if self.flash_dano > 0:
+            self.flash_dano -= 1
+
         if self.estado == "bow":
             self.shoot_timer -= 1
             if self.shoot_timer <= 0:
@@ -135,10 +145,4 @@ class Player:
             self.vidas -= 1
             self.invencivel = True
             self.inv_frames = self.inv_max
-
-        #COMO CHAMAR LEVAR DANO
-        # for inimigo in inimigos[:]:
-        #     inimigo.atualizar(jogador)
-        #     if inimigo.rect.colliderect(jogador.rect):
-        #         jogador.levar_dano()  # coloca tp aqui
-        #         inimigos.remove(inimigo)
+            self.flash_dano = 5  # Inicia o efeito de flash vermelho
