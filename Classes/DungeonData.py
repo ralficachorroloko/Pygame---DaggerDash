@@ -122,10 +122,12 @@ SALAS_RANDOMIZADAS = {
             (768, 0, 32, 600)     # Parede direita
         ],
         "inimigos": [
-            (Esqueleto, 400, 300),  
-            (Esqueleto, 600, 400),   
-            (Esqueleto, 200, 400),   
-            (Kamikaze, 500, 450, 1)
+            (Esqueleto, 32*10, 32*4),  
+            (Kamikaze, 32*16, 32*4,0.75),   
+            (Esqueleto, 32*14, 32*9),   
+            (Kamikaze, 32*10, 32*14, 0.75),
+            (Esqueleto, 32*16, 32*14)
+
         ]
     },
         'Sala_esqueletos': {
@@ -141,6 +143,15 @@ SALAS_RANDOMIZADAS = {
             (0, 32*5, 800, 30),     # transversal superior
             (0, 32*12-16, 800, 30+16)     # transversal superior
         ],
+        "inimigos": [
+            (Esqueleto, 32*5, 32*3),  
+            (Esqueleto, 32*10, 32*3),
+            (Esqueleto, 32*15, 32*3),
+            (Esqueleto, 32*5, 32*15),
+            (Esqueleto, 32*10, 32*15),
+            (Esqueleto, 32*15, 32*15)
+
+        ]
     },
         'Sala_retangulos': {
             "imagem": "Sala retangulos.png",
@@ -155,6 +166,13 @@ SALAS_RANDOMIZADAS = {
                 (256-32, 96+64, 64, 288+32),     # Retangulo menor
                 (512+32, 96+32, 64+32, 288+64+16),     # Retangulo maior
             ],
+            "inimigos": [
+                (Esqueleto, 32*12, 32*9),
+                (Esqueleto, 32*20, 32*9),
+                (Kamikaze, 32*12, 32*4,0.75),
+                (Kamikaze, 32*12, 32*15,0.75),
+                
+            ]
     },
         'Sala_Buracos': {
         "imagem": "sala buracos.png",
@@ -175,6 +193,13 @@ SALAS_RANDOMIZADAS = {
             (32*19, 32*11, 64, 64), #buraco 6
             
         ],
+        "inimigos": [
+            (Kamikaze, 32*10, 32*5, 0.75),
+            (Esqueleto, 32* 16, 32*5),
+            (Kamikaze, 32*10, 32*11, 0.75),
+            (Esqueleto, 32*16, 32*11),
+            (Kamikaze, 32*13, 32*8, 0.75)
+        ]
     },
         'Sala_dinheiro': {
         "imagem": "Sala dinheiro.png",
@@ -194,6 +219,15 @@ SALAS_RANDOMIZADAS = {
             (322, 33*8, 62*3, 29*4),
 
         ],
+        'inimigos': [
+
+            (Kamikaze, 32*10, 32*5, 0.75),
+            (Esqueleto, 32 * 14, 32*5),
+            (Kamikaze, 32*10, 32*13, 0.75),
+            (Esqueleto, 32*14, 32*13),
+            (Esqueleto, 32*18, 32*10),
+
+        ]
     }, 
         'Sala_estranha':{
         "imagem": "Sala estranha.png",
@@ -216,6 +250,13 @@ SALAS_RANDOMIZADAS = {
             
             
         ],
+        "inimigos": [
+
+            (Esqueleto, 32*11, 32*3),
+            (Esqueleto, 32*11, 32*14),
+            (Esqueleto, 32*11, 32*8)
+
+        ]
     }
 }
 # Matrizes das dungeons (7 dungeons lineares)
@@ -224,7 +265,7 @@ DUNGEON_MATRIZES = {
         ["Spawn"],
     ],
     2: [
-        ["Começo andar", "Sala_aberta", "sala_random", "Transição_andar"],
+        ["Começo andar", "Sala_estranha", "sala_random", "Transição_andar"],
     ],
     3: [
         ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
