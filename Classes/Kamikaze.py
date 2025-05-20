@@ -29,6 +29,24 @@ class Kamikaze:
         self.anim_frame = 0
         self.anim_intervalo = 30
 
+        # Sistema de knockback e contador de flechas
+        self.knockback = [0, 0]  # [dx, dy] do knockback
+        self.knockback_forca = 5  # Força do knockback
+        self.knockback_duracao = 10  # Frames que o knockback dura
+        self.knockback_timer = 0  # Timer do knockback
+        self.flechas_acertadas = 0  # Contador de flechas que acertaram
+
+    def receber_dano(self, dano, direcao=None):
+        self.flechas_acertadas += 1
+        
+        # Aplica knockback se uma direção foi fornecida
+        if direcao:
+            self.knockback = [direcao[0] * self.knockback_forca, direcao[1] * self.knockback_forca]
+            self.knockback_timer = self.knockback_duracao
+        
+        # Retorna True se morreu (2 flechas acertadas)
+        return self.flechas_acertadas >= 2
+
     def _colidiu_com_parede(self, paredes):
         for parede in paredes:
             if self.rect.colliderect(parede.rect):
@@ -36,6 +54,23 @@ class Kamikaze:
         return False
 
     def atualizar(self, player, paredes):
+        # Guarda a posição anterior
+        pos_anterior_x = self.rect.centerx
+        pos_anterior_y = self.rect.centery
+
+        # Aplica knockback se ativo
+        if self.knockback_timer > 0:
+            self.rect.centerx += self.knockback[0]
+            self.rect.centery += self.knockback[1]
+            self.knockback_timer -= 1
+            
+            # Verifica colisão com paredes durante knockback
+            if self._colidiu_com_parede(paredes):
+                self.rect.centerx = pos_anterior_x
+                self.rect.centery = pos_anterior_y
+                self.knockback_timer = 0
+            return
+
         player_x, player_y = player.rect.center
         inimigo_x, inimigo_y = self.rect.center
         distancia = hypot(player_x - inimigo_x, player_y - inimigo_y)
@@ -54,37 +89,34 @@ class Kamikaze:
                 dx = (dir_x / distancia) * velocidade
                 dy = (dir_y / distancia) * velocidade
         else:
-            self.anim_intervalo = 20
-            if not self.em_patrulha:
-                self.limite_esquerdo = self.rect.x - 50
-                self.limite_direito = self.rect.x + 50
+            self.anim_intervalo = 30
+            if self.em_patrulha:
+                dx = self.direcao * velocidade
+                if self.rect.centerx <= self.limite_esquerdo:
+                    self.direcao = 1
+                elif self.rect.centerx >= self.limite_direito:
+                    self.direcao = -1
+            else:
                 self.em_patrulha = True
-
-            dx = self.direcao * self.velocidade
-            dy = 0
-
-            # Verifica se atingiu os limites de patrulha
-            if self.rect.x <= self.limite_esquerdo:
-                self.direcao = 1  # Muda para direita
-            elif self.rect.x >= self.limite_direito:
-                self.direcao = -1  # Muda para esquerda
-
-        # Movimento e verificação de colisão
-        if dx != 0 or dy != 0:
-            self.rect.x += dx
-            if self._colidiu_com_parede(paredes):
-                self.rect.x -= dx
-                self.direcao *= -1  # Inverte a direção ao colidir
-
-            self.rect.y += dy
-            if self._colidiu_com_parede(paredes):
-                self.rect.y -= dy
+                self.limite_esquerdo = self.rect.centerx - 50
+                self.limite_direito = self.rect.centerx + 50
 
         # Atualiza animação
         self.anim_frame += 1
         if self.anim_frame >= self.anim_intervalo:
-            self.img_atual = (self.img_atual + 1) % 2
             self.anim_frame = 0
+            self.img_atual = (self.img_atual + 1) % len(self.imagens)
+
+        # Move o inimigo
+        self.rect.centerx += dx
+        self.rect.centery += dy
+
+        # Verifica colisão com paredes
+        if self._colidiu_com_parede(paredes):
+            self.rect.centerx = pos_anterior_x
+            self.rect.centery = pos_anterior_y
+            if self.em_patrulha:
+                self.direcao *= -1
 
     def desenhar(self, tela):
         tela.blit(self.imagens[self.img_atual], self.rect)

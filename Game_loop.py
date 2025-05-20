@@ -101,8 +101,25 @@ def tela_jogo(tela):
         for shoot in shoots[:]:
             if shoot.atualizar():  # True se passou do alcance
                 shoots.remove(shoot)
+            else:
+                # Verifica colisão com inimigos na sala atual
+                sala_atual = dungeon.sala_atual()
+                if sala_atual:
+                    for inimigo in sala_atual.inimigos[:]:
+                        if shoot.get_rect().colliderect(inimigo.rect):
+                            # Calcula a direção da flecha para o knockback
+                            dx = shoot.flecha.dx
+                            dy = shoot.flecha.dy
+                            if inimigo.receber_dano(100, (dx, dy)):  # Passa a direção da flecha
+                                sala_atual.inimigos.remove(inimigo)
+                            shoots.remove(shoot)
+                            break
 
-        dungeon.atualizar()
+        # Atualiza a sala atual
+        sala_atual = dungeon.sala_atual()
+        if sala_atual:
+            sala_atual.atualizar(jogador)
+
         jogador.atualizar()
 
         # Verifica colisão da espada com inimigos

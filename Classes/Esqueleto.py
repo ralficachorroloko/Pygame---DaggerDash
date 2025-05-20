@@ -78,10 +78,42 @@ class Esqueleto:
         self.distancia_patrulha = 100  # Distância que percorre em cada direção
         self.pos_inicial_patrulha_x = x  # Posição inicial da patrulha
 
+        # Sistema de knockback e contador de flechas
+        self.knockback = [0, 0]  # [dx, dy] do knockback
+        self.knockback_forca = 5  # Força do knockback
+        self.knockback_duracao = 10  # Frames que o knockback dura
+        self.knockback_timer = 0
+        self.flechas_acertadas = 0  # Contador de flechas que acertaram
+
+    def receber_dano(self, dano, direcao=None):
+        self.flechas_acertadas += 1
+        
+        # Aplica knockback se uma direção foi fornecida
+        if direcao:
+            self.knockback = [direcao[0] * self.knockback_forca, direcao[1] * self.knockback_forca]
+            self.knockback_timer = self.knockback_duracao
+        
+        # Retorna True se morreu (2 flechas acertadas)
+        return self.flechas_acertadas >= 2
+
     def atualizar_patrulha(self, paredes):
         # Guarda a posição anterior
         pos_anterior_x = self.rect.centerx
+        pos_anterior_y = self.rect.centery
         
+        # Aplica knockback se ativo
+        if self.knockback_timer > 0:
+            self.rect.centerx += self.knockback[0]
+            self.rect.centery += self.knockback[1]
+            self.knockback_timer -= 1
+            
+            # Verifica colisão com paredes durante knockback
+            if self.verificar_colisao_paredes(paredes):
+                self.rect.centerx = pos_anterior_x
+                self.rect.centery = pos_anterior_y
+                self.knockback_timer = 0
+            return
+
         # Move na direção atual da patrulha
         self.rect.centerx += self.direcao_patrulha * self.velocidade_patrulha
         
@@ -105,6 +137,19 @@ class Esqueleto:
         pos_anterior_x = self.rect.centerx
         pos_anterior_y = self.rect.centery
         
+        # Aplica knockback se ativo
+        if self.knockback_timer > 0:
+            self.rect.centerx += self.knockback[0]
+            self.rect.centery += self.knockback[1]
+            self.knockback_timer -= 1
+            
+            # Verifica colisão com paredes durante knockback
+            if self.verificar_colisao_paredes(paredes):
+                self.rect.centerx = pos_anterior_x
+                self.rect.centery = pos_anterior_y
+                self.knockback_timer = 0
+            return
+
         # Calcula o movimento
         dx = alvo_x - self.rect.centerx
         dy = alvo_y - self.rect.centery
@@ -166,47 +211,45 @@ class Esqueleto:
         if distancia > 0:
             dx = dx / distancia
             dy = dy / distancia
-            flecha = Flecha(self.rect.centerx,self.rect.centery,dx,dy,self.velocidade_flecha,self.alcance_flecha)
-            self.flechas.append(flecha)
+            
+            self.flechas.append(Flecha(
+                self.rect.centerx,
+                self.rect.centery,
+                dx,
+                dy,
+                self.velocidade_flecha,
+                self.alcance_flecha
+            ))
 
     def atualizar(self, player, paredes):
-        self.detectar_player(player)
+        # Atualiza o estado baseado na distância do player
+        distancia_player = self.detectar_player(player)
         
-        # Atualiza movimento baseado no estado
+        # Atualiza as flechas
+        for flecha in self.flechas[:]:
+            if flecha.atualizar():
+                self.flechas.remove(flecha)
+        
+        # Atualiza o movimento
         if self.estado_movimento == "patrulhando":
             self.atualizar_patrulha(paredes)
         elif self.estado_movimento == "fugindo":
-            self.mover_em_direcao(
-                self.rect.centerx - (player.rect.centerx - self.rect.centerx),
-                self.rect.centery - (player.rect.centery - self.rect.centery),
-                self.velocidade,
-                paredes
-            )
+            # Move na direção oposta ao player
+            alvo_x = self.rect.centerx + (self.rect.centerx - player.rect.centerx)
+            alvo_y = self.rect.centery + (self.rect.centery - player.rect.centery)
+            self.mover_em_direcao(alvo_x, alvo_y, self.velocidade, paredes)
         
-        # Atualiza tiro independentemente do movimento
+        # Atualiza o ataque
         if self.estado_ataque == "atacando":
             self.tempo_ultimo_tiro += 1
             if self.tempo_ultimo_tiro >= self.tempo_cd:
                 self.atirar(player)
                 self.tempo_ultimo_tiro = 0
-                
-        # Atualiza flechas
-        flechas_para_remover = []
-        for flecha in self.flechas:
-            if flecha.atualizar():  # True se passou do alcance
-                flechas_para_remover.append(flecha)
-            elif flecha.rect.colliderect(player.rect):  # Verifica colisão com o jogador
-                player.levar_dano()  # Jogador leva dano
-                flechas_para_remover.append(flecha)  # Remove a flecha após causar dano
-                
-        for flecha in flechas_para_remover:
-            self.flechas.remove(flecha)
-
-    def receber_dano(self, dano):
-        self.vida -= dano
-        return self.vida <= 0
 
     def desenhar(self, tela):
+        # Desenha o esqueleto
         tela.blit(self.imagem_atual, self.rect)
+        
+        # Desenha as flechas
         for flecha in self.flechas:
             flecha.pinta(tela)
