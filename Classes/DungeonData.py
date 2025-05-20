@@ -122,8 +122,9 @@ SALAS_RANDOMIZADAS = {
             (768, 0, 32, 600)     # Parede direita
         ],
         "inimigos": [
-            (Esqueleto, 400, 300),  # Esqueleto no centro
-            (Esqueleto, 600, 400),   # Esqueleto no canto inferior direito
+            (Esqueleto, 400, 300),  
+            (Esqueleto, 600, 400),   
+            (Esqueleto, 200, 400),   
             (Kamikaze, 500, 450, 1)
         ]
     },

@@ -2,6 +2,7 @@ import pygame
 from os import path
 from Classes.Parede import Parede
 from Classes.Kamikaze import Kamikaze
+from Classes.Esqueleto import Esqueleto
 from config import HEIGHT, WIDTH
 
 class Sala:
@@ -110,6 +111,13 @@ class Sala:
                 player.levar_dano()  # Jogador leva dano
                 if isinstance(inimigo, Kamikaze):  # Se for um kamikaze, ele é removido após causar dano
                     self.inimigos.remove(inimigo)
+            
+            # Verifica colisão das flechas do esqueleto com o jogador
+            if isinstance(inimigo, Esqueleto):
+                for flecha in inimigo.flechas[:]:
+                    if flecha.rect.colliderect(player.rect):
+                        player.levar_dano()
+                        inimigo.flechas.remove(flecha)
         
         # Atualiza todos os objetos da sala
         for objeto in self.objetos:
