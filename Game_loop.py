@@ -20,7 +20,7 @@ def tela_jogo(tela):
             dungeon.adicionar_sala(sala, i, 0)
 
     pygame.mixer.init()
-    pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
+    pygame.mixer.music.load(path.join('sons/track.mp3'))
     pygame.mixer.music.play(-1)  
 
     clock = pygame.time.Clock()

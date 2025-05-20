@@ -4,8 +4,8 @@ from config import *
 
 def tela_game_over(tela):
     pygame.mixer.init()
-    pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
-    pygame.mixer.music.play(-1)  
+    pygame.mixer.music.load(path.join('sons/gameover.mp3'))
+    pygame.mixer.music.play()  
 
     clock = pygame.time.Clock()
     timer = 0
