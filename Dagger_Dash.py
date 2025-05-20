@@ -13,6 +13,7 @@ import random
 from config import *
 from tela_inicial import *
 from testes2 import tela_teste2
+from Classes.Esqueleto import *
 
 
 pygame.init()

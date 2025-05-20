@@ -3,12 +3,15 @@ import pygame
 
 class Player:
     def __init__(self, x, y, imagem_idle, velocidade, tamanho):
-        # Carrega as imagens de idle e walk
+        # Carrega as imagens de idle, walk e bow
         idle_img = pygame.image.load(path.join("img", "player", imagem_idle)).convert_alpha()
         self.idle_imagem = pygame.transform.scale(idle_img, tamanho)
 
         walk_img = pygame.image.load(path.join("img", "player", "walk.png")).convert_alpha()
         self.walk_imagem = pygame.transform.scale(walk_img, tamanho)
+
+        bow_img = pygame.image.load(path.join("img", "player", "bow.png")).convert_alpha()
+        self.bow_imagem = pygame.transform.scale(bow_img, tamanho)
 
         self.imagem_original = self.idle_imagem
         self.rect = self.imagem_original.get_rect(topleft=(x, y))
@@ -23,6 +26,9 @@ class Player:
         self.anim_frame = 0
         self.anim_intervalo = 10  # Frames entre as trocas
 
+        self.shoot_timer = 0
+        self.shoot_duracao = 10  # quantos frames ele fica na pose de tiro
+
         # Dash
         self.dash_ativo = False
         self.dash_frames = 0
@@ -33,8 +39,20 @@ class Player:
 
         self.tem_arco = False
 
+        #SISTEMA DE VIDAS
+        self.vidas = 3           # Quantidade de vidas
+        self.invencivel = False  # Evita dano múltiplo em um frame
+        self.inv_frames = 0      # Tempo de invencibilidade
+        self.inv_max = 60        # Duração da invencibilidade 
+
     def desenhar(self, tela):
-        imagem_base = self.walk_imagem if self.estado == "walk" else self.idle_imagem
+        if self.estado == "bow":
+            imagem_base = self.bow_imagem
+        elif self.estado == "walk":
+            imagem_base = self.walk_imagem
+        else:
+            imagem_base = self.idle_imagem
+
         if self.espelhado:
             imagem_a_usar = pygame.transform.flip(imagem_base, True, False)
         else:
@@ -47,15 +65,15 @@ class Player:
         tela.blit(imagem_a_usar, self.rect)
 
     def mover(self, dx, dy):
-        if dx != 0 or dy != 0:
-            # Alterna entre walk e idle a cada intervalo
-            self.anim_frame += 1
-            if self.anim_frame >= self.anim_intervalo:
-                self.estado = "walk" if self.estado == "idle" else "idle"
+        if self.estado != "bow":  # <-- Protege contra sobrescrever "bow"
+            if dx != 0 or dy != 0:
+                self.anim_frame += 1
+                if self.anim_frame >= self.anim_intervalo:
+                    self.estado = "walk" if self.estado == "idle" else "idle"
+                    self.anim_frame = 0
+            else:
+                self.estado = "idle"
                 self.anim_frame = 0
-        else:
-            self.estado = "idle"
-            self.anim_frame = 0
 
         # Atualiza espelhamento
         if dx > 0:
@@ -102,3 +120,25 @@ class Player:
         if self.dash_cooldown > 0:
             self.dash_cooldown -= 1
 
+        if self.invencivel:
+            self.inv_frames -= 1
+            if self.inv_frames <= 0:
+                self.invencivel = False
+
+        if self.estado == "bow":
+            self.shoot_timer -= 1
+            if self.shoot_timer <= 0:
+                self.estado = "idle"
+
+    def levar_dano(self):
+        if not self.invencivel:
+            self.vidas -= 1
+            self.invencivel = True
+            self.inv_frames = self.inv_max
+
+        #COMO CHAMAR LEVAR DANO
+        # for inimigo in inimigos[:]:
+        #     inimigo.atualizar(jogador)
+        #     if inimigo.rect.colliderect(jogador.rect):
+        #         jogador.levar_dano()  # coloca tp aqui
+        #         inimigos.remove(inimigo)
