@@ -15,7 +15,7 @@ class Espada:
         
         # Carrega e prepara a imagem base
         self.imagem_base = pygame.image.load(path.join("img", "itens", "slash.png")).convert_alpha()
-        self.imagem_base = pygame.transform.scale(self.imagem_base, (100, 50))
+        self.imagem_base = pygame.transform.scale(self.imagem_base, (50, 100))
         
         # Define as dimensões base
         self.largura_base = 100
@@ -42,7 +42,7 @@ class Espada:
                 self.largura_base,
                 self.altura_base
             )
-        elif 3*pi/4 <= self.angulo < 5*pi/4:  # Esquerda
+        elif 3*pi/4 <= self.angulo < 4*pi/4:  # Esquerda
             self.imagem = pygame.transform.rotate(self.imagem_base, 0)
             self.rect = pygame.Rect(
                 self.player.rect.left - self.altura_base,

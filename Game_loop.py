@@ -25,7 +25,7 @@ def tela_jogo(tela):
     jogador = dungeon.player
     espada = None
     shoots = []
-    municao_atual = 3
+    municao_atual = 4
     recarregando = False
     tempo_recarga = 0
 
@@ -102,7 +102,7 @@ def tela_jogo(tela):
             tempo_recarga -= 1
             if tempo_recarga <= 0:
                 recarregando = False
-                municao_atual = 3
+                municao_atual = 4
 
         # Atualiza e remove tiros se passaram do alcance
         for shoot in shoots[:]:

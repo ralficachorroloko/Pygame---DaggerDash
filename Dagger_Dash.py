@@ -11,6 +11,7 @@ import pygame
 from math import *
 import random
 from config import *
+
 from tela_inicial import *
 from Game_loop import tela_jogo
 from Classes.Esqueleto import *

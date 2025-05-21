@@ -37,10 +37,10 @@ class Player:
         self.dash_cooldown_max = 120
         self.dash_direcao = [0, 0]
 
-        self.tem_arco = False
+        self.tem_arco = True
 
         #SISTEMA DE VIDAS
-        self.vidas = 3           # Quantidade de vidas
+        self.vidas = 5           # Quantidade de vidas
         self.invencivel = False  # Evita dano múltiplo em um frame
         self.inv_frames = 0      # Tempo de invencibilidade
         self.inv_max = 60        # Duração da invencibilidade 
