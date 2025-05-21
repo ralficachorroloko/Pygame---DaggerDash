@@ -66,8 +66,8 @@ class Dungeon:
                 self.pos_y += 1
                 self.ultima_direcao = "cima"
             elif direcao == "centro":
-                # Se for a porta central da sala de transição ou spawn, avança para a próxima dungeon
-                if sala_atual.nome == "Transição de andar" or sala_atual.nome == "Spawn":
+                # Se for a porta central da sala de transição, spawn ou sala besta, avança para a próxima dungeon
+                if sala_atual.nome in ["Transição de andar", "Spawn", "Sala_besta"]:
                     self.dungeon_num += 1
                     if self.dungeon_num <= 7:  # Verifica se ainda há dungeons disponíveis
                         # Limpa a matriz atual

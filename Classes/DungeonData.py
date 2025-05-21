@@ -108,6 +108,18 @@ SALAS_FIXAS = {
             (96, 32*11,32*14, 32)
         ],
     },
+    'Final':{
+        "imagem": "Final.png",
+        "nome": "Final",
+        "portas": Default_portas,
+        "paredes": [
+            (0, 0, 800, 64),      # Parede superior
+            (0, 544, 800, 32),    # Parede inferior
+            (0, 0, 32, 600),      # Parede esquerda
+            (768, 0, 32, 600),
+            
+        ]
+    }
 }
 
 SALAS_RANDOMIZADAS = {
@@ -265,22 +277,22 @@ DUNGEON_MATRIZES = {
         ["Spawn"],
     ],
     2: [
-        ["Começo andar", "Sala_estranha", "sala_random", "Transição_andar"],
+        ["Começo andar", "Final", "sala_random", "Sala_besta"],
     ],
     3: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
     ],
     4: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
     ],
     5: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
     ],
     6: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
     ],
     7: [
-        ["Começo andar", "sala_random", "sala_random", "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Final"],
     ],
 }
 
@@ -289,7 +301,26 @@ def criar_sala(tipo_sala):
     if tipo_sala == 'sala_random':
         # Escolhe aleatoriamente uma sala do dicionário SALAS_RANDOMIZADAS
         import random
-        tipo_sala = random.choice(list(SALAS_RANDOMIZADAS.keys()))
+        
+        # Lista de salas já usadas nesta dungeon
+        if not hasattr(criar_sala, 'salas_usadas'):
+            criar_sala.salas_usadas = []
+        
+        # Se todas as salas já foram usadas, limpa a lista
+        if len(criar_sala.salas_usadas) >= len(SALAS_RANDOMIZADAS):
+            criar_sala.salas_usadas = []
+        
+        # Filtra as salas que ainda não foram usadas
+        salas_disponiveis = [sala for sala in SALAS_RANDOMIZADAS.keys() 
+                           if sala not in criar_sala.salas_usadas]
+        
+        # Se não houver salas disponíveis, usa todas
+        if not salas_disponiveis:
+            salas_disponiveis = list(SALAS_RANDOMIZADAS.keys())
+        
+        # Escolhe uma sala aleatória das disponíveis
+        tipo_sala = random.choice(salas_disponiveis)
+        criar_sala.salas_usadas.append(tipo_sala)
         dados = SALAS_RANDOMIZADAS[tipo_sala]
     elif tipo_sala in SALAS_FIXAS:
         dados = SALAS_FIXAS[tipo_sala]
