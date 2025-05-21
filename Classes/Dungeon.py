@@ -2,7 +2,7 @@ import pygame
 from os import path
 from Classes.Player import Player
 from Classes.Sala import Sala
-from config import HEIGHT, WIDTH, WHITE
+from config import HEIGHT, WIDTH, WHITE, VITORIA
 
 class Dungeon:
     def __init__(self, matriz=None, dungeon_num=1):
@@ -52,6 +52,10 @@ class Dungeon:
         # Verifica se o jogador entrou em uma porta
         direcao = sala_atual.verificar_porta(self.player.rect)
         if direcao:
+            # Se estiver na sala final e entrar pela porta direita, ativa a tela de vitória
+            if sala_atual.nome == "Final" and direcao == "direita":
+                return VITORIA
+                
             # Calcula a nova posição baseada na direção
             if direcao == "esquerda":
                 self.pos_x -= 1

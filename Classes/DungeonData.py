@@ -1,6 +1,7 @@
 from Classes.Sala import Sala
 from Classes.Kamikaze import Kamikaze
 from Classes.Esqueleto import Esqueleto
+import pygame
 
 
 Default_portas = {
@@ -277,7 +278,7 @@ DUNGEON_MATRIZES = {
         ["Spawn"],
     ],
     2: [
-        ["Começo andar", "Final", "sala_random", "Sala_besta"],
+        ["Começo andar", "sala_random", "sala_random", "Sala_besta"],
     ],
     3: [
         ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
@@ -339,10 +340,19 @@ def criar_sala(tipo_sala):
                 inimigos.append(Esqueleto(*inimigo_data[1:]))
     
     # Cria a sala com as configurações personalizadas
-    return Sala(
+    sala = Sala(
         dados['nome'], 
         dados["portas"], 
         inimigos=inimigos, 
         imagem_sala=dados.get('imagem'),
         paredes=dados.get('paredes', [])  # Lista de paredes personalizadas
-    ) 
+    )
+    
+    # Se for a sala final, garante que as portas estejam configuradas corretamente
+    if dados['nome'] == "Final":
+        sala.areas_portas = {
+            "esquerda": pygame.Rect(0, 280-64, 40, 96+32+16),
+            "direita": pygame.Rect(784-20, 280-64, 35, 96+32+16)
+        }
+    
+    return sala 

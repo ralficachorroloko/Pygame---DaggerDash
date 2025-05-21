@@ -12,23 +12,31 @@ from config import *
 from math import *
 
 def tela_jogo(tela):
+    # Inicializa a dungeon com a matriz da primeira dungeon
+    from Classes.DungeonData import DUNGEON_MATRIZES, criar_sala
     dungeon = Dungeon(dungeon_num=1)
-
+    
+    # Cria e adiciona as salas da primeira dungeon
     for i, tipo_sala in enumerate(DUNGEON_MATRIZES[1][0]):
         sala = criar_sala(tipo_sala)
         if sala:
             dungeon.adicionar_sala(sala, i, 0)
+    
+    jogador = dungeon.player
+    espada = None
+    shoots = []
+    municao_atual = 3
+    recarregando = False
+    tempo_recarga = 0
 
-    pygame.mixer.init()
+    # Inicializa a música do jogo
+    pygame.mixer.music.stop()  # Para a música anterior
     pygame.mixer.music.load(path.join('sons/track.mp3'))
-    pygame.mixer.music.play(-1)  
+    pygame.mixer.music.play(-1)  # -1 para loop infinito
 
     clock = pygame.time.Clock()
-    espada = None
-    jogador = dungeon.player
-    shoots = []
-    jogador.tem_arco = True
     running = True
+    state = JOGO
 
     # Coração de vida
     vida_img = pygame.image.load(path.join("img", "player", "vida.png")).convert_alpha()
@@ -39,9 +47,6 @@ def tela_jogo(tela):
     flecha_img = pygame.transform.scale(flecha_img, (20, 20))  # Flecha menor para o indicador
 
     # Variáveis para o sistema de munição e recarga
-    recarregando = False
-    tempo_recarga = 0
-    municao_atual = 3
     FPS = 60  # Frames por segundo
     TEMPO_RECARGA = 3 * FPS  # 3 segundos em frames
 
@@ -88,7 +93,9 @@ def tela_jogo(tela):
             jogador.dash()
 
         if dx != 0 or dy != 0:
-            dungeon.passagem_porta(dx, dy)
+            resultado = dungeon.passagem_porta(dx, dy)
+            if resultado == VITORIA:
+                return VITORIA
 
         # Sistema de munição e recarga
         if recarregando:
@@ -142,14 +149,10 @@ def tela_jogo(tela):
         # Desenha tudo
         tela.fill((0, 0, 0))
         dungeon.desenhar(tela)
-
-        # Desenha os tiros
+        if espada:
+            espada.desenhar(tela)
         for shoot in shoots:
             shoot.desenhar(tela)
-
-        # Desenha a espada por último para ficar por cima
-        if espada and espada.esta_ativo():
-            espada.desenhar(tela)
 
         # Desenha as vidas
         for i in range(jogador.vidas):
@@ -161,5 +164,5 @@ def tela_jogo(tela):
 
         pygame.display.flip()
 
-    return QUIT
+    return state
 

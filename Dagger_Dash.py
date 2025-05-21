@@ -15,6 +15,7 @@ from tela_inicial import *
 from Game_loop import tela_jogo
 from Classes.Esqueleto import *
 from game_over import tela_game_over
+from tela_vitoria import tela_vitoria
 
 
 pygame.init()
@@ -38,6 +39,9 @@ while state != QUIT:
     elif state == GAME_OVER:
         print("Entrando na tela de Game Over")
         state = tela_game_over(tela)
+    elif state == VITORIA:
+        print("Entrando na tela de Vitória")
+        state = tela_vitoria(tela)
     
 # ===== Finalização =====
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados 

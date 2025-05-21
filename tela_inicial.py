@@ -39,6 +39,7 @@ def tela_inicio(tela):
 
                 if event.key == pygame.K_RETURN:
                     print("Pressionou enter - Mudando para jogo")   
+                    pygame.mixer.music.stop()  # Para a música antes de mudar de tela
                     state = JOGO
                     running = False
 

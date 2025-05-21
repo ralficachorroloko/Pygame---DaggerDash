@@ -4,7 +4,7 @@ from math import *
 
 # Dados gerais do jogo.
 WIDTH = 800 # Largura da tela
-HEIGHT = 576 # Altura da tela
+HEIGHT = 600 # Altura da tela
 FPS = 60 # Frames por segundo
 
 # Define algumas variáveis com as cores básicas
@@ -22,3 +22,4 @@ QUIT = 2
 JOGO = 4  # 
 DUNGEON = 5  #  estado para fluxo de Dungeon
 GAME_OVER = 6  #  estado para a tela de game over
+VITORIA = 3  #  estado para vitória
