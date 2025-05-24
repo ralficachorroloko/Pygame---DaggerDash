@@ -139,7 +139,8 @@ class Adrenalina(Item):
             nome="Seringa de Adrenalina",
             descricao="Seringa de adrenalina que aumenta a velocidade de ataque",
             raridade=raridade,
-            atributos_base={"velocidade_ataque": 0.3}
+            atributos_base={"velocidade_ataque": 0.3},
+            imagem_nome="seringa.png"
         )
 
 class AmuletoDeVida(Item):

@@ -1,5 +1,6 @@
 from os import path
 import pygame
+from itens import Inventario
 
 class Player:
     def __init__(self, x, y, imagem_idle, velocidade, tamanho):
@@ -17,8 +18,15 @@ class Player:
         self.rect = self.imagem_original.get_rect(topleft=(x, y))
         self.estado = "idle"
 
+        # Atributos base do jogador
         self.velocidade = velocidade 
         self.velocidade_original = velocidade
+        self.dano = 1
+        self.defesa = 0
+        self.velocidade_ataque = 1.0
+        self.vida_maxima = 5
+        self.vida = 5
+
         self.direcao = None
         self.espelhado = False
 
@@ -45,6 +53,33 @@ class Player:
         self.inv_frames = 0      # Tempo de invencibilidade
         self.inv_max = 60        # Duração da invencibilidade 
         self.flash_dano = 0      # Contador para o efeito de flash vermelho
+
+        # Sistema de Inventário
+        self.inventario = Inventario()
+
+    def equipar_item(self, item):
+        if self.inventario.equipar_item(item):
+            item.aplicar_efeitos(self)
+            return True
+        return False
+
+    def desequipar_item(self, item):
+        if self.inventario.desequipar_item(item):
+            item.remover_efeitos(self)
+            return True
+        return False
+
+    def adicionar_item(self, item):
+        return self.inventario.adicionar_item(item)
+
+    def remover_item(self, item):
+        return self.inventario.remover_item(item)
+
+    def obter_itens_equipados(self):
+        return self.inventario.obter_itens_equipados()
+
+    def obter_itens_inventario(self):
+        return self.inventario.obter_itens_inventario()
 
     def desenhar(self, tela):
         if self.estado == "bow":

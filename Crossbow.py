@@ -61,13 +61,16 @@ class Crossbow:
         self.atualizar_imagem()
 
     def pode_atirar(self):
-        return self.cooldown == 0
+        return self.cooldown == 0 and self.player.tem_arco
     
     def atirar(self):
         if self.pode_atirar():
             self.cooldown = self.cooldown_max
+            self.player.estado = "bow"
+            self.player.shoot_timer = self.player.shoot_duracao
             return True
         return False
     
     def desenhar(self, tela):
-        tela.blit(self.imagem, self.rect)
+        if self.player.tem_arco:
+            tela.blit(self.imagem, self.rect)
