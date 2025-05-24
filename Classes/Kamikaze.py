@@ -3,6 +3,8 @@ from Classes.Player import Player
 import pygame
 from config import *
 from math import *
+from itens import criar_item_aleatorio, rolar_raridade
+import random
 
 class Kamikaze:
     TAMANHO_PADRAO = (32, 32)
@@ -36,6 +38,8 @@ class Kamikaze:
         self.knockback_timer = 0  # Timer do knockback
         self.flechas_acertadas = 0  # Contador de flechas que acertaram
 
+        self.drop_chance = 0.2  # 20% de chance de dropar um item (1 em 5)
+
     def receber_dano(self, dano, direcao=None):
         self.flechas_acertadas += 1
         
@@ -44,8 +48,17 @@ class Kamikaze:
             self.knockback = [direcao[0] * self.knockback_forca, direcao[1] * self.knockback_forca]
             self.knockback_timer = self.knockback_duracao
         
-        # Retorna True se morreu (2 flechas acertadas)
-        return self.flechas_acertadas >= 2
+        # Se morreu, tenta dropar um item
+        if self.flechas_acertadas >= 2:
+            if random.random() < self.drop_chance:
+                return True, self.tentar_drop()
+            return True, None
+        return False, None
+
+    def tentar_drop(self):
+        # Se passou no teste de chance (10%), o drop é garantido
+        raridade = rolar_raridade()
+        return criar_item_aleatorio()
 
     def _colidiu_com_parede(self, paredes):
         for parede in paredes:

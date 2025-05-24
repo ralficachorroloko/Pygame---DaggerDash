@@ -117,8 +117,12 @@ def tela_jogo(tela):
                             # Calcula a direção da flecha para o knockback
                             dx = shoot.flecha.dx
                             dy = shoot.flecha.dy
-                            if inimigo.receber_dano(100, (dx, dy)):  # Passa a direção da flecha
+                            morreu, item = inimigo.receber_dano(100, (dx, dy))  # Passa a direção da flecha
+                            if morreu:
                                 sala_atual.inimigos.remove(inimigo)
+                                if item:
+                                    sala_atual.objetos.append(item)
+                                    item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
                             shoots.remove(shoot)
                             break
 
@@ -141,8 +145,12 @@ def tela_jogo(tela):
                         if isinstance(inimigo, Kamikaze):
                             sala_atual.inimigos.remove(inimigo)
                         elif isinstance(inimigo, Esqueleto):
-                            if inimigo.receber_dano(100):  # Dano suficiente para matar
+                            morreu, item = inimigo.receber_dano(100)  # Dano suficiente para matar
+                            if morreu:
                                 sala_atual.inimigos.remove(inimigo)
+                                if item:
+                                    sala_atual.objetos.append(item)
+                                    item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
         else:
             espada = None
 

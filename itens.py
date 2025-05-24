@@ -7,8 +7,8 @@ class Raridade(Enum):
     COMUM = {"chance": 0.60, "multiplicador": 1.0, "cor": "branco"}
     INCOMUM = {"chance": 0.25, "multiplicador": 1.5, "cor": "verde"}
     RARO = {"chance": 0.10, "multiplicador": 2.0, "cor": "azul"}
-    ÉPICO = {"chance": 0.04, "multiplicador": 2.5, "cor": "roxo"}
-    LENDÁRIO = {"chance": 0.01, "multiplicador": 3.0, "cor": "laranja"}
+    ÉPICO = {"chance": 0.05, "multiplicador": 2.5, "cor": "roxo"}
+    LENDÁRIO = {"chance": 0.00, "multiplicador": 3.0, "cor": "laranja"}
 
 class Item:
     def __init__(self, nome, descricao, raridade="COMUM", atributos_base=None, imagem_nome=None):
@@ -156,27 +156,55 @@ class AmuletoDeVida(Item):
             imagem_nome="amuleto de vida.png"
         )
 
-class AmuletoDeDefesa(Item):
-    def __init__(self, raridade="COMUM"):
-        super().__init__(
-            nome="Amuleto de Defesa",
-            descricao="Um amuleto mágico que aumenta a defesa",
-            raridade=raridade,
-            atributos_base={"defesa": 3},
-            imagem_nome="amuleto de escudo.png"
-        )
+    def aplicar_efeitos(self, jogador):
+        if not self.equipado:
+            # Primeiro aplica o aumento da vida máxima
+            vida_maxima_atual = getattr(jogador, "vida_maxima", 0)
+            vida_maxima_nova = vida_maxima_atual + self.atributos["vida_maxima"]
+            setattr(jogador, "vida_maxima", vida_maxima_nova)
+            
+            # Se a vida atual for menor que a máxima, recupera a vida
+            vida_atual = getattr(jogador, "vida", 0)
+            if vida_atual < vida_maxima_nova:
+                setattr(jogador, "vida", vida_maxima_nova)
+            
+            self.equipado = True
+
+    def remover_efeitos(self, jogador):
+        if self.equipado:
+            # Remove o aumento da vida máxima
+            vida_maxima_atual = getattr(jogador, "vida_maxima", 0)
+            vida_maxima_nova = vida_maxima_atual - self.atributos["vida_maxima"]
+            setattr(jogador, "vida_maxima", vida_maxima_nova)
+            
+            # Se a vida atual for maior que a nova vida máxima, ajusta para a máxima
+            vida_atual = getattr(jogador, "vida", 0)
+            if vida_atual > vida_maxima_nova:
+                setattr(jogador, "vida", vida_maxima_nova)
+            
+            self.equipado = False
 
 def criar_item_aleatorio():
-
+    # Lista de itens disponíveis (sem o amuleto de defesa)
     itens_disponiveis = [
-        Halter,
-        BotasVelozes,
-        Adrenalina,
-        AmuletoDeVida,
-        AmuletoDeDefesa
+        AmuletoDeVida,  # Comum (60%)
+        BotasVelozes,   # Incomum (25%)
+        Halter,         # Raro (10%)
+        Adrenalina      # Épico (5%)
     ]
     
-    classe_item = random.choice(itens_disponiveis)
-    
+    # Escolhe o item baseado na raridade
     raridade = rolar_raridade()
-    return classe_item(raridade)
+    
+    # Mapeia a raridade para o item correspondente
+    if raridade == "COMUM":
+        return AmuletoDeVida(raridade)
+    elif raridade == "INCOMUM":
+        return BotasVelozes(raridade)
+    elif raridade == "RARO":
+        return Halter(raridade)
+    elif raridade == "ÉPICO":
+        return Adrenalina(raridade)
+    
+    # Fallback para comum se algo der errado
+    return AmuletoDeVida("COMUM")

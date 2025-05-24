@@ -101,8 +101,8 @@ class Sala:
     def atualizar(self, player):
         if not player:  # Verifica se o player é válido
             return
-            
-        # Atualiza todos os inimigos na sala
+
+        # Atualiza todos os inimigos
         for inimigo in self.inimigos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração
             inimigo.atualizar(player, self.paredes)
             
@@ -110,18 +110,28 @@ class Sala:
             if inimigo.rect.colliderect(player.rect):
                 player.levar_dano()  # Jogador leva dano
                 if isinstance(inimigo, Kamikaze):  # Se for um kamikaze, ele é removido após causar dano
-                    self.inimigos.remove(inimigo)
-            
-            # Verifica colisão das flechas do esqueleto com o jogador
-            if isinstance(inimigo, Esqueleto):
+                    morreu, item = inimigo.receber_dano(100)
+                    if morreu:
+                        self.inimigos.remove(inimigo)
+                        if item:
+                            self.objetos.append(item)
+                            item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
+            elif isinstance(inimigo, Esqueleto):
                 for flecha in inimigo.flechas[:]:
                     if flecha.rect.colliderect(player.rect):
                         player.levar_dano()
                         inimigo.flechas.remove(flecha)
+                        morreu, item = inimigo.receber_dano(100)
+                        if morreu:
+                            self.inimigos.remove(inimigo)
+                            if item:
+                                self.objetos.append(item)
+                                item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
         
-        # Atualiza todos os objetos da sala
+        # Atualiza todos os objetos da sala que têm o método atualizar
         for objeto in self.objetos:
-            objeto.atualizar()
+            if hasattr(objeto, 'atualizar'):
+                objeto.atualizar()
     
     def verificar_colisao(self, player, pos_anterior):
         if not player or not pos_anterior:  # Verifica se os parâmetros são válidos

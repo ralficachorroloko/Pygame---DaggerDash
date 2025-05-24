@@ -2,6 +2,8 @@ from os import path
 import pygame
 from math import *
 from config import *
+from itens import criar_item_aleatorio, rolar_raridade
+import random
 
 class Flecha:
     def __init__(self, x, y, dx, dy, velocidade, alcance):
@@ -85,6 +87,9 @@ class Esqueleto:
         self.knockback_timer = 0
         self.flechas_acertadas = 0  # Contador de flechas que acertaram
 
+        self.drop_chance = 0.2  # 20% de chance de dropar um item (1 em 5)
+        self.drop_garantido = False  # Se o drop é garantido
+
     def receber_dano(self, dano, direcao=None):
         self.flechas_acertadas += 1
         
@@ -93,8 +98,17 @@ class Esqueleto:
             self.knockback = [direcao[0] * self.knockback_forca, direcao[1] * self.knockback_forca]
             self.knockback_timer = self.knockback_duracao
         
-        # Retorna True se morreu (2 flechas acertadas)
-        return self.flechas_acertadas >= 2
+        # Se morreu, tenta dropar um item
+        if self.flechas_acertadas >= 2:
+            if random.random() < self.drop_chance:
+                return True, self.tentar_drop()
+            return True, None
+        return False, None
+
+    def tentar_drop(self):
+        # Se passou no teste de chance (10%), o drop é garantido
+        raridade = rolar_raridade()
+        return criar_item_aleatorio()
 
     def atualizar_patrulha(self, paredes):
         # Guarda a posição anterior
