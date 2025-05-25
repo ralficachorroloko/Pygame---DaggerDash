@@ -300,14 +300,8 @@ DUNGEON_MATRIZES = {
         ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
     ],
     5: [
-        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
-    ],
-    6: [
-        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
-    ],
-    7: [
-        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Final"],
-    ],
+        ["Começo andar", "sala_randDiminui om", "sala_random", 'sala_random', "Final"],
+    ]
 }
 
 # Função para criar uma sala a partir do dicionário
