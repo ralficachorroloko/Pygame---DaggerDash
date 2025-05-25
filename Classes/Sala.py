@@ -74,7 +74,15 @@ class Sala:
             return None
             
         for direcao, area in self.areas_portas.items():
-            if player_rect.colliderect(area):
+            # Cria uma área de detecção maior ao redor da porta
+            area_deteccao = pygame.Rect(
+                area.x - 10,  # Estende 10 pixels para a esquerda
+                area.y,      # Mantém a mesma altura
+                area.width + 20,  # Estende 10 pixels para cada lado
+                area.height
+            )
+            
+            if player_rect.colliderect(area_deteccao):
                 return direcao
         return None
     
@@ -124,12 +132,6 @@ class Sala:
                     if flecha.rect.colliderect(player.rect):
                         player.levar_dano()
                         inimigo.flechas.remove(flecha)
-                        morreu, item = inimigo.receber_dano(100)
-                        if morreu:
-                            self.inimigos.remove(inimigo)
-                            if item:
-                                self.objetos.append(item)
-                                item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
         
         # Verifica colisão com itens no chão
         for item in self.objetos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração

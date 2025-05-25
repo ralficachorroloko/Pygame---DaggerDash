@@ -140,9 +140,19 @@ class BotasVelozes(Item):
             nome="Botas Velozes",
             descricao="Botas mágicas que aumentam a velocidade de movimento",
             raridade=raridade,
-            atributos_base={"velocidade": 2},
+            atributos_base={"velocidade": 1.05},
             imagem_nome="Botas da velocidade.png"
         )
+
+    def aplicar_efeitos(self, jogador):
+        if not self.equipado:
+            jogador.velocidade = jogador.velocidade_original * self.atributos["velocidade"]
+            self.equipado = True
+
+    def remover_efeitos(self, jogador):
+        if self.equipado:
+            jogador.velocidade = jogador.velocidade_original
+            self.equipado = False
 
 class Adrenalina(Item):
     def __init__(self, raridade="COMUM"):

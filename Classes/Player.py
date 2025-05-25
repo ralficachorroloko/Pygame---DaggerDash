@@ -140,6 +140,10 @@ class Player:
             self.rect.x += self.dash_direcao[0] * self.velocidade
             self.rect.y += self.dash_direcao[1] * self.velocidade
         else:
+            # Normaliza o movimento para evitar problemas com diagonais
+            if dx != 0 and dy != 0:
+                dx = dx * 0.7071  # 1/sqrt(2)
+                dy = dy * 0.7071
             self.rect.x += dx * self.velocidade
             self.rect.y += dy * self.velocidade
 
