@@ -79,16 +79,15 @@ class Dungeon:
                         self.pos_x = 0
                         self.pos_y = 0
                         # Carrega a nova matriz da próxima dungeon
-                        from Classes.DungeonData import DUNGEON_MATRIZES
+                        from Classes.DungeonData import DUNGEON_MATRIZES, criar_sala
                         nova_matriz = DUNGEON_MATRIZES[self.dungeon_num]
                         # Cria as salas da nova dungeon
                         for i, tipo_sala in enumerate(nova_matriz[0]):
-                            from Classes.DungeonData import criar_sala
                             sala = criar_sala(tipo_sala)
                             if sala:
                                 self.adicionar_sala(sala, i, 0)
                         return
-                self.completa = True
+                    self.completa = True
 
             # Teleporta o jogador para a posição correta na nova sala
             nova_sala = self.sala_atual()

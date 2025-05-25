@@ -94,9 +94,12 @@ class Sala:
         for inimigo in self.inimigos:
             inimigo.desenhar(tela)
             
-        # Desenha os objetos da sala
+        # Desenha os objetos da sala que têm o método desenhar
         for objeto in self.objetos:
-            objeto.desenhar(tela)
+            if hasattr(objeto, 'desenhar'):
+                objeto.desenhar(tela)
+            elif hasattr(objeto, 'pinta'):  # Alguns objetos usam 'pinta' em vez de 'desenhar'
+                objeto.pinta(tela)
     
     def atualizar(self, player):
         if not player:  # Verifica se o player é válido
@@ -127,6 +130,14 @@ class Sala:
                             if item:
                                 self.objetos.append(item)
                                 item.posicionar(inimigo.rect.centerx, inimigo.rect.centery)
+        
+        # Verifica colisão com itens no chão
+        for item in self.objetos[:]:  # Usa uma cópia da lista para evitar problemas durante a iteração
+            if hasattr(item, 'rect') and player.rect.colliderect(item.rect):
+                # Adiciona o item ao inventário
+                if player.adicionar_item(item):
+                    # Se o item foi adicionado com sucesso, remove-o do chão
+                    self.objetos.remove(item)
         
         # Atualiza todos os objetos da sala que têm o método atualizar
         for objeto in self.objetos:

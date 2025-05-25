@@ -72,10 +72,18 @@ class Inventario:
     def __init__(self):
         self.itens = []
         self.itens_equipados = []
+        self.jogador = None
+
+    def set_jogador(self, jogador):
+        self.jogador = jogador
 
     def adicionar_item(self, item):
         self.itens.append(item)
-        self.equipar_item(item)
+        if item not in self.itens_equipados:
+            if hasattr(item, 'aplicar_efeitos') and self.jogador:
+                item.aplicar_efeitos(self.jogador)
+            item.equipado = True
+            self.itens_equipados.append(item)
         return True
 
     def remover_item(self, item):
@@ -87,10 +95,11 @@ class Inventario:
         return False
 
     def equipar_item(self, item):
-
         if item in self.itens and not item.equipado:
             item.equipado = True
             self.itens_equipados.append(item)
+            if hasattr(item, 'aplicar_efeitos'):
+                item.aplicar_efeitos(self)
             return True
         return False
 
@@ -98,11 +107,13 @@ class Inventario:
         if item in self.itens_equipados:
             item.equipado = False
             self.itens_equipados.remove(item)
+            if hasattr(item, 'remover_efeitos'):
+                item.remover_efeitos(self)
             return True
         return False
 
     def obter_itens_equipados(self):
-                return self.itens_equipados
+        return self.itens_equipados
 
     def obter_itens_inventario(self):
         return self.itens
@@ -140,7 +151,7 @@ class Adrenalina(Item):
             descricao="Seringa de adrenalina que aumenta a velocidade de ataque",
             raridade=raridade,
             atributos_base={"velocidade_ataque": 0.3},
-            imagem_nome="seringa.png"
+            imagem_nome="Adrenalina.png"
         )
 
 class AmuletoDeVida(Item):
@@ -150,39 +161,18 @@ class AmuletoDeVida(Item):
             descricao="Um amuleto mágico que aumenta os pontos de vida",
             raridade=raridade,
             atributos_base={
-                "vida_maxima": 20,
-                "vida": 20
+                "vidas": 1
             },
             imagem_nome="amuleto de vida.png"
         )
 
     def aplicar_efeitos(self, jogador):
-        if not self.equipado:
-            # Primeiro aplica o aumento da vida máxima
-            vida_maxima_atual = getattr(jogador, "vida_maxima", 0)
-            vida_maxima_nova = vida_maxima_atual + self.atributos["vida_maxima"]
-            setattr(jogador, "vida_maxima", vida_maxima_nova)
-            
-            # Se a vida atual for menor que a máxima, recupera a vida
-            vida_atual = getattr(jogador, "vida", 0)
-            if vida_atual < vida_maxima_nova:
-                setattr(jogador, "vida", vida_maxima_nova)
-            
-            self.equipado = True
+        jogador.vidas += 1
+        self.equipado = True
 
     def remover_efeitos(self, jogador):
-        if self.equipado:
-            # Remove o aumento da vida máxima
-            vida_maxima_atual = getattr(jogador, "vida_maxima", 0)
-            vida_maxima_nova = vida_maxima_atual - self.atributos["vida_maxima"]
-            setattr(jogador, "vida_maxima", vida_maxima_nova)
-            
-            # Se a vida atual for maior que a nova vida máxima, ajusta para a máxima
-            vida_atual = getattr(jogador, "vida", 0)
-            if vida_atual > vida_maxima_nova:
-                setattr(jogador, "vida", vida_maxima_nova)
-            
-            self.equipado = False
+        jogador.vidas -= 1
+        self.equipado = False
 
 def criar_item_aleatorio():
     # Lista de itens disponíveis (sem o amuleto de defesa)

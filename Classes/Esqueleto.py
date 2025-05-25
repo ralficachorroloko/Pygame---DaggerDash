@@ -87,8 +87,7 @@ class Esqueleto:
         self.knockback_timer = 0
         self.flechas_acertadas = 0  # Contador de flechas que acertaram
 
-        self.drop_chance = 0.2  # 20% de chance de dropar um item (1 em 5)
-        self.drop_garantido = False  # Se o drop é garantido
+        self.drop_chance = 0.5  # 100% de chance de dropar um item
 
     def receber_dano(self, dano, direcao=None):
         self.flechas_acertadas += 1
@@ -98,15 +97,13 @@ class Esqueleto:
             self.knockback = [direcao[0] * self.knockback_forca, direcao[1] * self.knockback_forca]
             self.knockback_timer = self.knockback_duracao
         
-        # Se morreu, tenta dropar um item
+        # Se morreu, dropa um item
         if self.flechas_acertadas >= 2:
-            if random.random() < self.drop_chance:
-                return True, self.tentar_drop()
-            return True, None
+            return True, self.tentar_drop()
         return False, None
 
     def tentar_drop(self):
-        # Se passou no teste de chance (10%), o drop é garantido
+        # Drop é garantido, apenas rola a raridade
         raridade = rolar_raridade()
         return criar_item_aleatorio()
 

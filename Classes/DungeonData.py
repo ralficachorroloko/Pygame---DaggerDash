@@ -245,7 +245,20 @@ SALAS_RANDOMIZADAS = {
         'Sala_estranha':{
         "imagem": "Sala estranha.png",
         "nome": "Sala_estranha",
-        "portas": Default_portas,
+        "portas": {
+            "esquerda": {
+                "x": 0,
+                "y": 280-64,
+                "largura": 40,
+                "altura": 96+32+16
+            },
+            "direita": {
+                "x": 784-20,
+                "y": 280-64,
+                "largura": 35,
+                "altura": 96+32+16
+            }
+        },
         "paredes": [
             (0, 0, 800, 64),      # Parede superior
             (0, 544, 800, 32),    # Parede inferior

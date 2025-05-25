@@ -56,24 +56,37 @@ class Player:
 
         # Sistema de Inventário
         self.inventario = Inventario()
+        self.inventario.set_jogador(self)  # Passa a referência do jogador para o inventário
 
     def equipar_item(self, item):
-        if self.inventario.equipar_item(item):
-            item.aplicar_efeitos(self)
+        if item in self.inventario.itens and not item.equipado:
+            item.equipado = True
+            self.inventario.itens_equipados.append(item)
+            # Aplica os efeitos do item
+            if hasattr(item, 'aplicar_efeitos'):
+                item.aplicar_efeitos(self)
             return True
         return False
 
     def desequipar_item(self, item):
         if self.inventario.desequipar_item(item):
-            item.remover_efeitos(self)
+            # Remove os efeitos do item
+            if hasattr(item, 'remover_efeitos'):
+                item.remover_efeitos(self)
             return True
         return False
 
     def adicionar_item(self, item):
+        # Adiciona o item ao inventário (os efeitos serão aplicados pelo inventário)
         return self.inventario.adicionar_item(item)
 
     def remover_item(self, item):
-        return self.inventario.remover_item(item)
+        if self.inventario.remover_item(item):
+            # Remove os efeitos do item
+            if hasattr(item, 'remover_efeitos'):
+                item.remover_efeitos(self)
+            return True
+        return False
 
     def obter_itens_equipados(self):
         return self.inventario.obter_itens_equipados()
