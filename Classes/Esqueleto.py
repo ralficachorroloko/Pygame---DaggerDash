@@ -6,7 +6,25 @@ from itens import criar_item_aleatorio, rolar_raridade
 import random
 
 class Flecha:
+    """Classe que representa uma flecha atirada pelo esqueleto.
+    
+    Gerencia o comportamento da flecha, incluindo:
+    - Movimento e rotação
+    - Alcance e velocidade
+    - Colisão
+    """
+    
     def __init__(self, x, y, dx, dy, velocidade, alcance):
+        """Inicializa uma nova flecha.
+        
+        Args:
+            x (int): Posição inicial x
+            y (int): Posição inicial y
+            dx (float): Direção horizontal normalizada
+            dy (float): Direção vertical normalizada
+            velocidade (int): Velocidade da flecha
+            alcance (int): Distância máxima que a flecha pode percorrer
+        """
         self.imagem_original = pygame.image.load(path.join("img", "esqueleto", "flecha arqueiro.png")).convert_alpha()
         self.tamanho_flecha = (45, 15)
         self.imagem_original = pygame.transform.scale(self.imagem_original, self.tamanho_flecha)
@@ -24,12 +42,18 @@ class Flecha:
         self.rect.centery = y
 
     def atualizar_rotacao(self):
+        """Atualiza a rotação da flecha baseada em sua direção."""
         self.imagem_rotacionada = pygame.transform.rotate(self.imagem_original, -self.angulo)
         nrect = self.imagem_rotacionada.get_rect()
         nrect.center = (self.rect.centerx, self.rect.centery)
         self.rect = nrect
 
     def atualizar(self):
+        """Atualiza a posição da flecha.
+        
+        Returns:
+            bool: True se a flecha atingiu seu alcance máximo, False caso contrário
+        """
         mx = self.dx * self.velocidade
         my = self.dy * self.velocidade
         self.rect.centerx += mx
@@ -38,10 +62,30 @@ class Flecha:
         return self.distancia_percorrida >= self.alcance
 
     def pinta(self, tela):
+        """Desenha a flecha na tela.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde a flecha será desenhada
+        """
         tela.blit(self.imagem_rotacionada, self.rect)
 
 class Esqueleto:
+    """Classe que representa um inimigo esqueleto arqueiro.
+    
+    Gerencia o comportamento do esqueleto, incluindo:
+    - Movimento e patrulha
+    - Ataque com arco
+    - Sistema de vida e dano
+    - Drop de itens
+    """
+    
     def __init__(self, x, y):
+        """Inicializa um novo esqueleto.
+        
+        Args:
+            x (int): Posição inicial x
+            y (int): Posição inicial y
+        """
         self.imagem_standby = pygame.image.load(path.join("img", "esqueleto", "Esqueleto stand by.png")).convert_alpha()
         self.imagem_atirando = pygame.image.load(path.join("img", "esqueleto", "Esqueleto atirando.png")).convert_alpha()
         
@@ -90,6 +134,15 @@ class Esqueleto:
         self.drop_chance = 0.5  # 100% de chance de dropar um item
 
     def receber_dano(self, dano, direcao=None):
+        """Processa o dano recebido pelo esqueleto.
+        
+        Args:
+            dano (int): Quantidade de dano
+            direcao (tuple, optional): Direção do knockback (dx, dy). Defaults to None.
+            
+        Returns:
+            tuple: (morreu, item) onde morreu é bool e item é o item dropado ou None
+        """
         self.flechas_acertadas += 1
         
         # Aplica knockback se uma direção foi fornecida
@@ -178,6 +231,14 @@ class Esqueleto:
                 self.rect.centery = pos_anterior_y
 
     def detectar_player(self, player):
+        """Atualiza o estado do esqueleto baseado na distância do jogador.
+        
+        Args:
+            player (Player): Referência ao jogador
+            
+        Returns:
+            float: Distância até o jogador
+        """
         distancia_player = self.verificar_distancia_player(player)
         
         # Atualiza estado de movimento baseado na distância do player
@@ -215,6 +276,11 @@ class Esqueleto:
         return False
 
     def atirar(self, player):
+        """Atira uma flecha na direção do jogador.
+        
+        Args:
+            player (Player): Alvo do tiro
+        """
         dx = player.rect.centerx - self.rect.centerx
         dy = player.rect.centery - self.rect.centery
         
@@ -233,6 +299,12 @@ class Esqueleto:
             ))
 
     def atualizar(self, player, paredes):
+        """Atualiza o estado do esqueleto.
+        
+        Args:
+            player (Player): Referência ao jogador
+            paredes (list): Lista de paredes para colisão
+        """
         # Atualiza o estado baseado na distância do player
         distancia_player = self.detectar_player(player)
         
@@ -258,6 +330,11 @@ class Esqueleto:
                 self.tempo_ultimo_tiro = 0
 
     def desenhar(self, tela):
+        """Desenha o esqueleto e suas flechas na tela.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde o esqueleto será desenhado
+        """
         # Desenha o esqueleto
         tela.blit(self.imagem_atual, self.rect)
         

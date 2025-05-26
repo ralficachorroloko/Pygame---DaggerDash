@@ -7,10 +7,26 @@ from itens import criar_item_aleatorio, rolar_raridade
 import random
 
 class Kamikaze:
+    """Classe que representa um inimigo kamikaze.
+    
+    Gerencia o comportamento do kamikaze, incluindo:
+    - Movimento e patrulha
+    - Animação
+    - Sistema de vida e dano
+    - Drop de itens
+    """
+    
     TAMANHO_PADRAO = (32, 32)
     ALCANCE_PADRAO = 200
 
     def __init__(self, x, y, velocidade):
+        """Inicializa um novo kamikaze.
+        
+        Args:
+            x (int): Posição inicial x
+            y (int): Posição inicial y
+            velocidade (int): Velocidade de movimento
+        """
         # Carrega duas imagens alternadas
         img1 = pygame.image.load(path.join("img", "kamikazze", "kami1.png")).convert_alpha()
         img2 = pygame.image.load(path.join("img", "kamikazze", "kami2.png")).convert_alpha()
@@ -41,6 +57,15 @@ class Kamikaze:
         self.drop_chance = 0.5  # 100% de chance de dropar um item
 
     def receber_dano(self, dano, direcao=None):
+        """Processa o dano recebido pelo kamikaze.
+        
+        Args:
+            dano (int): Quantidade de dano
+            direcao (tuple, optional): Direção do knockback (dx, dy). Defaults to None.
+            
+        Returns:
+            tuple: (morreu, item) onde morreu é bool e item é o item dropado ou None
+        """
         self.flechas_acertadas += 1
         
         # Aplica knockback se uma direção foi fornecida
@@ -65,6 +90,12 @@ class Kamikaze:
         return False
 
     def atualizar(self, player, paredes):
+        """Atualiza o estado do kamikaze.
+        
+        Args:
+            player (Player): Referência ao jogador
+            paredes (list): Lista de paredes para colisão
+        """
         # Guarda a posição anterior
         pos_anterior_x = self.rect.centerx
         pos_anterior_y = self.rect.centery
@@ -130,4 +161,9 @@ class Kamikaze:
                 self.direcao *= -1
 
     def desenhar(self, tela):
+        """Desenha o kamikaze na tela.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde o kamikaze será desenhado
+        """
         tela.blit(self.imagens[self.img_atual], self.rect)

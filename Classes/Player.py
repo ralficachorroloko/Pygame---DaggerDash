@@ -3,7 +3,25 @@ import pygame
 from itens import Inventario
 
 class Player:
+    """Classe que representa o jogador no jogo.
+    
+    Gerencia todas as características e comportamentos do jogador, incluindo:
+    - Movimentação e animações
+    - Sistema de vida e dano
+    - Habilidades (dash, ataque com espada e arco)
+    - Estado de invencibilidade
+    """
+    
     def __init__(self, x, y, imagem_idle, velocidade, tamanho):
+        """Inicializa o jogador com suas características básicas.
+        
+        Args:
+            x (int): Posição inicial x do jogador
+            y (int): Posição inicial y do jogador
+            imagem_idle (str): Nome do arquivo da imagem de idle
+            velocidade (int): Velocidade base de movimento
+            tamanho (tuple): Tamanho do sprite do jogador (largura, altura)
+        """
         # Carrega as imagens de idle, walk e bow
         idle_img = pygame.image.load(path.join("img", "player", imagem_idle)).convert_alpha()
         self.idle_imagem = pygame.transform.scale(idle_img, tamanho)
@@ -95,6 +113,11 @@ class Player:
         return self.inventario.obter_itens_inventario()
 
     def desenhar(self, tela):
+        """Desenha o jogador na tela com a animação apropriada.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde o jogador será desenhado
+        """
         if self.estado == "bow":
             imagem_base = self.bow_imagem
         elif self.estado == "walk":
@@ -119,6 +142,12 @@ class Player:
         tela.blit(imagem_a_usar, self.rect)
 
     def mover(self, dx, dy):
+        """Move o jogador na direção especificada.
+        
+        Args:
+            dx (int): Direção horizontal (-1 esquerda, 1 direita)
+            dy (int): Direção vertical (-1 cima, 1 baixo)
+        """
         if self.estado != "bow":  # <-- Protege contra sobrescrever "bow"
             if dx != 0 or dy != 0:
                 self.anim_frame += 1
@@ -148,6 +177,12 @@ class Player:
             self.rect.y += dy * self.velocidade
 
     def teleportar_para(self, x, y):
+        """Teleporta o jogador para uma posição específica.
+        
+        Args:
+            x (int): Nova posição x
+            y (int): Nova posição y
+        """
         self.rect.topleft = (x, y)
     
     def dash(self):

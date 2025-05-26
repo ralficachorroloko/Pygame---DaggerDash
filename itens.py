@@ -11,7 +11,25 @@ class Raridade(Enum):
     LENDÁRIO = {"chance": 0.00, "multiplicador": 3.0, "cor": "laranja"}
 
 class Item:
+    """Classe que representa um item coletável no jogo.
+    
+    Gerencia as características dos itens, incluindo:
+    - Nome e descrição
+    - Raridade e atributos
+    - Efeitos no jogador
+    - Renderização na tela
+    """
+    
     def __init__(self, nome, descricao, raridade="COMUM", atributos_base=None, imagem_nome=None):
+        """Inicializa um novo item.
+        
+        Args:
+            nome (str): Nome do item
+            descricao (str): Descrição do item
+            raridade (str, optional): Raridade do item. Defaults to "COMUM".
+            atributos_base (dict, optional): Atributos base do item. Defaults to None.
+            imagem_nome (str, optional): Nome do arquivo da imagem. Defaults to None.
+        """
         self.nome = nome
         self.descricao = descricao
         self.raridade = Raridade[raridade]
@@ -26,16 +44,32 @@ class Item:
             self.rect = None
     
     def posicionar(self, x, y):
+        """Posiciona o item em uma coordenada específica.
+        
+        Args:
+            x (int): Posição x
+            y (int): Posição y
+        """
         if hasattr(self, 'imagem'):
             self.rect = pygame.Rect(x, y, self.tamanho[0], self.tamanho[1])
             self.rect.centerx = x
             self.rect.centery = y
     
     def pinta(self, tela):
+        """Desenha o item na tela.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde o item será desenhado
+        """
         if hasattr(self, 'imagem') and self.rect:
             tela.blit(self.imagem, self.rect)
 
     def calcular_atributos(self):
+        """Calcula os atributos finais do item baseado em sua raridade.
+        
+        Returns:
+            dict: Dicionário com os atributos calculados
+        """
         multiplicador = self.raridade.value["multiplicador"]
         atributos_calculados = {}
         for chave, valor in self.atributos_base.items():
@@ -43,9 +77,19 @@ class Item:
         return atributos_calculados
 
     def obter_nome_colorido(self):
+        """Retorna o nome do item com a cor correspondente à sua raridade.
+        
+        Returns:
+            str: Nome do item colorido
+        """
         return f"{self.raridade.value['cor']}: {self.nome}"
 
     def aplicar_efeitos(self, jogador):
+        """Aplica os efeitos do item ao jogador.
+        
+        Args:
+            jogador (Player): Jogador que receberá os efeitos
+        """
         if not self.equipado:
             for atributo, valor in self.atributos.items():
                 valor_atual = getattr(jogador, atributo, 0)
@@ -53,6 +97,11 @@ class Item:
             self.equipado = True
 
     def remover_efeitos(self, jogador):
+        """Remove os efeitos do item do jogador.
+        
+        Args:
+            jogador (Player): Jogador que terá os efeitos removidos
+        """
         if self.equipado:
             for atributo, valor in self.atributos.items():
                 valor_atual = getattr(jogador, atributo, 0)

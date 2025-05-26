@@ -5,7 +5,22 @@ from Classes.Sala import Sala
 from config import HEIGHT, WIDTH, WHITE, VITORIA
 
 class Dungeon:
+    """Classe que representa uma dungeon no jogo.
+    
+    Gerencia a estrutura da dungeon, incluindo:
+    - Matriz de salas
+    - Posição do jogador
+    - Transições entre salas
+    - Progressão entre dungeons
+    """
+    
     def __init__(self, matriz=None, dungeon_num=1):
+        """Inicializa uma nova dungeon.
+        
+        Args:
+            matriz (list, optional): Matriz de salas da dungeon. Defaults to None.
+            dungeon_num (int, optional): Número da dungeon atual. Defaults to 1.
+        """
         self.matriz = matriz if matriz else []
         self.pos_x = 0
         self.pos_y = 0
@@ -15,6 +30,13 @@ class Dungeon:
         self.completa = False  # Indica se a dungeon foi completada
     
     def adicionar_sala(self, sala, x, y):
+        """Adiciona uma sala à matriz da dungeon.
+        
+        Args:
+            sala (Sala): Objeto sala a ser adicionado
+            x (int): Posição x na matriz
+            y (int): Posição y na matriz
+        """
         # Garante que a matriz tem espaço suficiente
         while len(self.matriz) <= y:
             self.matriz.append([])
@@ -30,11 +52,25 @@ class Dungeon:
             self.player = Player(sala.player_spawn[0], sala.player_spawn[1], "idle.png", 5, (32, 32))
     
     def sala_atual(self):
+        """Retorna a sala atual onde o jogador está.
+        
+        Returns:
+            Sala: Objeto da sala atual ou None se posição inválida
+        """
         if 0 <= self.pos_y < len(self.matriz) and 0 <= self.pos_x < len(self.matriz[self.pos_y]):
             return self.matriz[self.pos_y][self.pos_x]
         return None
     
     def passagem_porta(self, dx, dy):
+        """Gerencia a passagem do jogador entre salas.
+        
+        Args:
+            dx (int): Direção horizontal do movimento
+            dy (int): Direção vertical do movimento
+            
+        Returns:
+            int: Estado VITORIA se completou a dungeon, None caso contrário
+        """
         sala_atual = self.sala_atual()
         if not sala_atual:
             return
@@ -142,17 +178,18 @@ class Dungeon:
                 self.player.rect.topleft = pos_anterior
     
     def desenhar(self, tela):
+        """Desenha a sala atual e o jogador.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde a dungeon será desenhada
+        """
         sala_atual = self.sala_atual()
         if sala_atual:
             sala_atual.desenhar(tela)
             self.player.desenhar(tela)
-                
-            # Desenha o nome da sala atual e número da dungeon
-            fonte = pygame.font.Font(None, 36)
-            texto = fonte.render(f"Dungeon {self.dungeon_num} - Sala: {sala_atual.nome}", True, WHITE)
-            tela.blit(texto, (10, 10))
     
     def atualizar(self):
+        """Atualiza o estado da sala atual."""
         if self.player:
             self.sala_atual().atualizar(self.player)
     

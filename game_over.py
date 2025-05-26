@@ -3,6 +3,17 @@ import pygame
 from config import *
 
 def tela_game_over(tela):
+    """Função que gerencia a tela de Game Over.
+    
+    Mostra a tela de Game Over e aguarda o jogador pressionar ENTER para voltar
+    à tela inicial ou ESC para sair.
+    
+    Args:
+        tela (pygame.Surface): Superfície onde a tela de Game Over será renderizada
+        
+    Returns:
+        int: Estado do jogo após sair da tela de Game Over (INICIO ou QUIT)
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('sons/gameover.mp3'))
     pygame.mixer.music.play()  

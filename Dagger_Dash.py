@@ -1,5 +1,12 @@
 # ===== Inicialização =====
 # ----- Importa e inicia pacotes
+"""
+Arquivo principal do jogo Dagger Dash.
+
+Este arquivo contém o loop principal do jogo que gerencia as diferentes telas
+e estados do jogo (tela inicial, gameplay, game over, vitória).
+"""
+
 from os import path
 from Classes.Player import Player   
 from Classes.Sala import Sala

@@ -12,6 +12,17 @@ from config import *
 from math import *
 
 def tela_jogo(tela):
+    """Função principal que controla o loop do jogo.
+    
+    Gerencia todo o gameplay, incluindo inicialização da dungeon, controle de eventos,
+    sistema de combate, munição, colisões e renderização.
+    
+    Args:
+        tela (pygame.Surface): Superfície onde o jogo será renderizado
+        
+    Returns:
+        int: Estado do jogo após o loop terminar (GAME_OVER, VITORIA, QUIT)
+    """
     # Inicializa a dungeon com a matriz da primeira dungeon
     from Classes.DungeonData import DUNGEON_MATRIZES, criar_sala
     dungeon = Dungeon(dungeon_num=1)
@@ -44,7 +55,7 @@ def tela_jogo(tela):
 
     # Imagem da flecha para mostrar munição
     flecha_img = pygame.image.load(path.join("img", "esqueleto", "flecha arqueiro.png")).convert_alpha()
-    flecha_img = pygame.transform.scale(flecha_img, (20, 20))  # Flecha menor para o indicador
+    flecha_img = pygame.transform.scale(flecha_img, (48, 48))  # Aumentei ainda mais o tamanho da flecha
 
     # Variáveis para o sistema de munição e recarga
     FPS = 60  # Frames por segundo
@@ -168,7 +179,7 @@ def tela_jogo(tela):
 
         # Desenha as flechas de munição no canto inferior direito
         for i in range(municao_atual):
-            tela.blit(flecha_img, (WIDTH - 30 * (i + 1), HEIGHT - 30))
+            tela.blit(flecha_img, (WIDTH - 55 * (i + 1), HEIGHT - 55))  # Ajustei o espaçamento e posição
 
         pygame.display.flip()
 

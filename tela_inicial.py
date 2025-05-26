@@ -11,7 +11,17 @@ from math import *
 
 
 def tela_inicio(tela):
-
+    """Função que gerencia a tela inicial do jogo.
+    
+    Mostra a tela de título e aguarda o jogador pressionar ENTER para começar
+    ou ESC para sair.
+    
+    Args:
+        tela (pygame.Surface): Superfície onde a tela inicial será renderizada
+        
+    Returns:
+        int: Estado do jogo após sair da tela inicial (JOGO ou QUIT)
+    """
     pygame.mixer.init()
     pygame.mixer.music.load(path.join('sons/8bitmusic.mp3'))
     pygame.mixer.music.play(-1)  

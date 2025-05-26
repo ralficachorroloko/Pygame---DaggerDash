@@ -6,7 +6,26 @@ from Classes.Esqueleto import Esqueleto
 from config import HEIGHT, WIDTH
 
 class Sala:
+    """Classe que representa uma sala na dungeon.
+    
+    Gerencia os elementos de uma sala, incluindo:
+    - Paredes e colisões
+    - Inimigos
+    - Itens e objetos
+    - Portas e transições
+    """
+    
     def __init__(self, nome, portas, imagem_sala=None, paredes=None, inimigos=None, player_spawn=(400, 300)):
+        """Inicializa uma nova sala.
+        
+        Args:
+            nome (str): Nome identificador da sala
+            portas (dict): Dicionário de portas da sala
+            imagem_sala (str, optional): Caminho para a imagem da sala. Defaults to None.
+            paredes (list, optional): Lista de paredes da sala. Defaults to None.
+            inimigos (list, optional): Lista de inimigos da sala. Defaults to None.
+            player_spawn (tuple, optional): Posição inicial do jogador (x, y). Defaults to (400, 300).
+        """
         self.nome = nome
         self.portas = portas
         self.paredes = []
@@ -74,8 +93,16 @@ class Sala:
             self.paredes.append(Parede(0, 0, 32, HEIGHT))  # Parede esquerda 
             self.paredes.append(Parede(WIDTH-24, 0, 48, HEIGHT))  # Parede direita 
     
-    def verificar_porta(self, player_rect):
-        if not player_rect:  # Verifica se o rect é válido
+    def verificar_porta(self, rect):
+        """Verifica se o jogador entrou em uma porta.
+        
+        Args:
+            rect (pygame.Rect): Retângulo do jogador
+            
+        Returns:
+            str: Direção da porta ("esquerda", "direita", "cima", "baixo", "centro") ou None
+        """
+        if not rect:  # Verifica se o rect é válido
             return None
             
         for direcao, area in self.areas_portas.items():
@@ -87,11 +114,16 @@ class Sala:
                 area.height
             )
             
-            if player_rect.colliderect(area_deteccao):
+            if rect.colliderect(area_deteccao):
                 return direcao
         return None
     
     def desenhar(self, tela):
+        """Desenha todos os elementos da sala.
+        
+        Args:
+            tela (pygame.Surface): Superfície onde a sala será desenhada
+        """
         if not tela:  # Verifica se a tela é válida
             return
             
@@ -118,6 +150,11 @@ class Sala:
                 objeto.pinta(tela)
     
     def atualizar(self, player):
+        """Atualiza o estado de todos os elementos da sala.
+        
+        Args:
+            player (Player): Referência ao jogador para interações
+        """
         if not player:  # Verifica se o player é válido
             return
 
@@ -155,6 +192,15 @@ class Sala:
                 objeto.atualizar()
     
     def verificar_colisao(self, player, pos_anterior):
+        """Verifica colisões do jogador com as paredes da sala.
+        
+        Args:
+            player (Player): Jogador para verificar colisão
+            pos_anterior (tuple): Posição anterior do jogador (x, y)
+            
+        Returns:
+            bool: True se houve colisão, False caso contrário
+        """
         if not player or not pos_anterior:  # Verifica se os parâmetros são válidos
             return False
             
