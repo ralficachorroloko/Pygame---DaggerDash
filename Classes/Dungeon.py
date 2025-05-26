@@ -57,17 +57,20 @@ class Dungeon:
                 return VITORIA
                 
             # Calcula a nova posição baseada na direção
+            nova_pos_x = self.pos_x
+            nova_pos_y = self.pos_y
+            
             if direcao == "esquerda":
-                self.pos_x -= 1
+                nova_pos_x -= 1
                 self.ultima_direcao = "direita"
             elif direcao == "direita":
-                self.pos_x += 1
+                nova_pos_x += 1
                 self.ultima_direcao = "esquerda"
             elif direcao == "cima":
-                self.pos_y -= 1
+                nova_pos_y -= 1
                 self.ultima_direcao = "baixo"
             elif direcao == "baixo":
-                self.pos_y += 1
+                nova_pos_y += 1
                 self.ultima_direcao = "cima"
             elif direcao == "centro":
                 # Se for a porta central da sala de transição, spawn ou sala besta, avança para a próxima dungeon
@@ -88,18 +91,55 @@ class Dungeon:
                                 self.adicionar_sala(sala, i, 0)
                         return
                     self.completa = True
+                    return
 
-            # Teleporta o jogador para a posição correta na nova sala
-            nova_sala = self.sala_atual()
-            if nova_sala:
-                if self.ultima_direcao == "esquerda":
-                    self.player.teleportar_para(50, nova_sala.player_spawn[1])
-                elif self.ultima_direcao == "direita":
-                    self.player.teleportar_para(WIDTH - 100, nova_sala.player_spawn[1])
-                elif self.ultima_direcao == "cima":
-                    self.player.teleportar_para(nova_sala.player_spawn[0], 50)
-                elif self.ultima_direcao == "baixo":
-                    self.player.teleportar_para(nova_sala.player_spawn[0], HEIGHT - 100)
+            # Verifica se a nova posição está dentro dos limites da matriz
+            if 0 <= nova_pos_y < len(self.matriz) and 0 <= nova_pos_x < len(self.matriz[nova_pos_y]):
+                # Se a próxima sala for None, avança para a próxima dungeon
+                if self.matriz[nova_pos_y][nova_pos_x] is None:
+                    self.dungeon_num += 1
+                    if self.dungeon_num <= 7:  # Verifica se ainda há dungeons disponíveis
+                        # Limpa a matriz atual
+                        self.matriz = []
+                        self.pos_x = 0
+                        self.pos_y = 0
+                        # Carrega a nova matriz da próxima dungeon
+                        from Classes.DungeonData import DUNGEON_MATRIZES, criar_sala
+                        nova_matriz = DUNGEON_MATRIZES[self.dungeon_num]
+                        # Cria as salas da nova dungeon
+                        for i, tipo_sala in enumerate(nova_matriz[0]):
+                            sala = criar_sala(tipo_sala)
+                            if sala:
+                                self.adicionar_sala(sala, i, 0)
+                        return
+                    self.completa = True
+                    return
+
+                # Atualiza as posições
+                self.pos_x = nova_pos_x
+                self.pos_y = nova_pos_y
+
+                # Teleporta o jogador para a posição correta na nova sala
+                nova_sala = self.sala_atual()
+                if nova_sala:
+                    # Posiciona o jogador na nova sala
+                    if self.ultima_direcao == "esquerda":
+                        self.player.teleportar_para(50, nova_sala.player_spawn[1])
+                    elif self.ultima_direcao == "direita":
+                        self.player.teleportar_para(WIDTH - 100, nova_sala.player_spawn[1])
+                    elif self.ultima_direcao == "cima":
+                        self.player.teleportar_para(nova_sala.player_spawn[0], 50)
+                    elif self.ultima_direcao == "baixo":
+                        self.player.teleportar_para(nova_sala.player_spawn[0], HEIGHT - 100)
+                else:
+                    # Volta o jogador para a posição anterior
+                    self.player.rect.topleft = pos_anterior
+                    # Restaura as posições anteriores
+                    self.pos_x = nova_pos_x + (1 if direcao == "esquerda" else -1 if direcao == "direita" else 0)
+                    self.pos_y = nova_pos_y + (1 if direcao == "cima" else -1 if direcao == "baixo" else 0)
+            else:
+                # Volta o jogador para a posição anterior
+                self.player.rect.topleft = pos_anterior
     
     def desenhar(self, tela):
         sala_atual = self.sala_atual()

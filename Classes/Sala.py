@@ -20,8 +20,13 @@ class Sala:
             try:
                 self.imagem = pygame.image.load(path.join("Mapas", imagem_sala)).convert()
                 self.rect = self.imagem.get_rect()
-            except:
-                print(f"Erro ao carregar imagem da sala: {imagem_sala}")
+                # Verifica se a imagem foi carregada corretamente
+                if self.imagem.get_width() == 0 or self.imagem.get_height() == 0:
+                    print(f"Erro: Imagem da sala {imagem_sala} tem dimensões inválidas")
+                    self.imagem = None
+                    self.rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
+            except Exception as e:
+                print(f"Erro ao carregar imagem da sala {imagem_sala}: {str(e)}")
                 self.imagem = None
                 self.rect = pygame.Rect(0, 0, WIDTH, HEIGHT)
         else:
@@ -90,8 +95,11 @@ class Sala:
         if not tela:  # Verifica se a tela é válida
             return
             
-        # Desenha a imagem da sala se existir
-        if self.imagem:
+        # Desenha um fundo padrão caso a imagem não exista
+        if not self.imagem:
+            tela.fill((50, 50, 50))  # Cinza escuro como fundo padrão
+        else:
+            # Desenha a imagem da sala
             tela.blit(self.imagem, (0, 0))
         
         # Desenha as paredes

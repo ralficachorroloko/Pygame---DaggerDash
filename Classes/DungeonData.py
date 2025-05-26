@@ -40,7 +40,7 @@ SALAS_FIXAS = {
             (736, 0, 64, 600)     # Parede direita
         ]
     },
-    'Transição_andar':{
+    'Transição_andar1':{
         "nome": "Transição de andar",
         "imagem": "Transição de andar.png",
         "portas": {
@@ -82,7 +82,7 @@ SALAS_FIXAS = {
             (768, 0, 32, 600)     # Parede direita
         ]
     }, 
-    'Sala_besta': {
+    'Transição_andar2': {
         "imagem": "Sala Besta.png",
         "nome": "Sala_besta",
         "portas": {
@@ -291,16 +291,16 @@ DUNGEON_MATRIZES = {
         ["Spawn"],
     ],
     2: [
-        ["Começo andar", "sala_random", "sala_random", "Sala_besta"],
+        ["Começo andar", "sala_random", "sala_random", "Transição_andar2", None],
     ],
     3: [
-        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar1", None],
     ],
     4: [
-        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Transição_andar2", None],
     ],
     5: [
-        ["Começo andar", "sala_randDiminui om", "sala_random", 'sala_random', "Final"],
+        ["Começo andar", "sala_random", "sala_random", 'sala_random', "Final", None],
     ]
 }
 
