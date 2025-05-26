@@ -13,7 +13,7 @@ Esse jogo foi feito para o projeto final de Design de Software do primeiro semes
 
 ## Jogabilidade 
 
-Utilize WASD para se movimentar, Shift para dar Dash na direção que está andando. Para atacar mire com o mouse. Aperte o botão direito do mouse para usar sua espada e o botão esquerdo para usar o arco e flecha (depois de desbloqueado). Siga as instruções nas telas para navegar após morrer ou ganhar.
+Utilize WASD para se movimentar, Shift para dar Dash na direção que está andando. Para atacar mire com o mouse. Aperte o botão direito do mouse para usar sua espada e o botão esquerdo para usar o arco e flecha. Siga as instruções nas telas para navegar após morrer ou ganhar.
 
 ## Inspirações
 Nosso jogo foi inspirado no conceito de jogos Roguelike, e top-down shooters como **Hades** e **The Binding of Isaac**

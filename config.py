@@ -19,7 +19,9 @@ YELLOW = (255, 255, 0)
 INICIO = 0
 MAPA = 1
 QUIT = 2
-JOGO = 4  # 
+
+VITORIA = 3  #  estado para vitória
+JOGO = 4  #  estado para o jogo
 DUNGEON = 5  #  estado para fluxo de Dungeon
 GAME_OVER = 6  #  estado para a tela de game over
-VITORIA = 3  #  estado para vitória
+TUTORIAL = 7  #  estado para a tela de tutorial

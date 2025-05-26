@@ -24,6 +24,7 @@ from Game_loop import tela_jogo
 from Classes.Esqueleto import *
 from game_over import tela_game_over
 from tela_vitoria import tela_vitoria
+from tela_tutorial import tela_tutorial
 
 
 pygame.init()
@@ -41,6 +42,9 @@ while state != QUIT:
     if state == INICIO:
         print("Entrando na tela inicial")
         state = tela_inicio(tela)
+    elif state == TUTORIAL:
+        print("Entrando na tela de Tutorial")
+        state = tela_tutorial(tela)
     elif state == JOGO:
         print("Entrando no jogo")
         state = tela_jogo(tela)
