@@ -23,6 +23,6 @@ Nosso jogo foi inspirado no conceito de jogos Roguelike, e top-down shooters com
 
 ## Ultimas considerações
 
-**Vídeo de demonstração** - 
+**Vídeo de demonstração** - https://youtu.be/oTJNn9aEJCg
 
 Esperamos que gostem do jogo! Obrigado pela atenção.
