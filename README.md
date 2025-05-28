@@ -13,7 +13,7 @@ Esse jogo foi feito para o projeto final de Design de Software do primeiro semes
 
 ## Jogabilidade 
 
-Utilize WASD para se movimentar, Shift para dar Dash na direção que está andando. Para atacar mire com o mouse. Aperte o botão direito do mouse para usar sua espada e o botão esquerdo para usar o arco e flecha. Siga as instruções nas telas para navegar após morrer ou ganhar.
+Ao rodar o arquivo Dagger_Dash.py. Utilize WASD para se movimentar, Shift para dar Dash na direção que está andando. Para atacar mire com o mouse. Aperte o botão esquerd do mouse para usar sua espada e o botão direito para usar o arco e flecha. Siga as instruções na tela para navegar após morrer ou ganhar.
 
 ## Inspirações e assets
 Nosso jogo foi inspirado no conceito de jogos Roguelike, e top-down shooters como **Hades** e **The Binding of Isaac**.
